@@ -12,31 +12,39 @@ Project Organization
       ├── requirements.txt
       ├── setup.py
       └── src
-            ├── preprocessing
+            ├── chatbot_logic
             │   ├── Dockerfile
-            │   ├── preprocess.py
+            │   ├── chatbot_logic.py
             │   └── requirements.txt
-            └── validation
+            ├── data_processing
+            │   ├── Dockerfile
+            │   ├── data_processing.py
+            │   └── requirements.txt
+            ├── model_training
+            │   ├── Dockerfile
+            │   ├── model_training.py
+            │   └── requirements.txt
+            └── web_server
                   ├── Dockerfile
-                  ├── cv_val.py
+                  ├── web_server.py
                   └── requirements.txt
 
 
 --------
-# AC215 - Milestone2 - ButterFlyer
+# AC215 - Milestone2 - ScienceTutor
 
 **Team Members**
-Pavlov Protovief, Paolo Primopadre and Pablo El Padron
+Sijia (Nancy) Li, Ziqing Luo, Yuqing Pan, Jiashu Xu, Xiaohan Zhao
 
 **Group Name**
-Awesome Group
+Science Tutor
 
 **Project**
-In this project we aim to develop an application that can identify various species of butterflies in the wild using computer vision and offer educational content through a chatbot interface.
+In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
 
 ### Milestone2 ###
 
-We gathered dataset of 1M butterflies representing 17K species. Our dataset comes from following sources - (1),(2),(3) with approx 100GB in size. We parked our dataset in a private Google Cloud Bucket. 
+We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public dataset that consists of ~21k multimodal multiple choice questions covering a diverse set of science topics. The dataset is available at [Hugging Face](https://huggingface.co/datasets/derek-thomas/ScienceQA).
 
 **Preprocess container**
 - This container reads 100GB of data and resizes the image sizes and stores it back to GCP
