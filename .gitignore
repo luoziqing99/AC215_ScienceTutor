@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+src/data_processing/ScienceQA
+src/data_processing/ScienceQA-LLAVA
+# GCS creds
+src/data_processing/*.json
+.idea
