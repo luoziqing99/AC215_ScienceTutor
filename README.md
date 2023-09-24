@@ -46,7 +46,7 @@ In this project we aim to develop an educational application that provides insta
 
 We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public dataset that consists of ~21k multimodal multiple choice questions covering a diverse set of science topics. The dataset is available at [Hugging Face](https://huggingface.co/datasets/derek-thomas/ScienceQA).
 
-**Preprocess container**
+#### Preprocess container
 - The container load dataset from huggingface, and convert each data instance into LLaVA format to enforce format consistency as LLaVA training format.
 - The container will store the reformatted dataset, so that user can retrieve the dataset to (1) use for training (2) upload to GCP, huggingface etc, your choice.
 
@@ -59,6 +59,9 @@ We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public
 (4) [`src/data_processing/upload_to_hf.py`](src/data_processing/upload_to_hf.py): upload to huggingface as private dataset
 
 (5) [`src/data_processing/upload_to_gcs.py`](src/data_processing/upload_to_gcs.py): upload to Google Cloud Storage.
+
+However, as mentioned in [Data Versioning](#data-versioning), we use `dvc` to version control the dataset.
+You can simply `dvc pull` to obtain the processed dataset, and can safely skip the rest of this section.
 
 To run Dockerfile:
 ```shell
@@ -95,15 +98,9 @@ To ease development, we have uploaded the reformatted dataset to
 - Huggingface: [`cnut1648/ScienceQA-LLAVA`](https://huggingface.co/datasets/cnut1648/ScienceQA-LLAVA/).
 - GCS: [`gs://ac215-sciencetutor/ScienceQA-LLAVA`](https://console.cloud.google.com/storage/browser/ac215-sciencetutor/ScienceQA-LLAVA). For TA, please contact us for access.
 
-**Data Versioning**
+#### Data Versioning
 
 We additionally use `dvc` to version control the dataset.
 Specifically, `src/data_processing/ScienceQA-LLAVA.dvc` is the dvc file that tracks the reformatted dataset. 
 The data is remotely tracked in GCS.
-To download the dataset, run `dvc pull` in `src/data_processing/`.
-
-**Notebooks**
-This folder contains code that is not part of container - for e.g: EDA, any 🔍 🕵️‍♀️ 🕵️‍♂️ crucial insights, reports or visualizations.
-
-----
-You may adjust this template as appropriate for your project.
+To download the dataset, run `dvc pull` after cloning the repo.
