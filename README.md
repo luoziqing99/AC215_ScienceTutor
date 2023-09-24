@@ -58,6 +58,8 @@ We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public
 
 (4) [`src/data_processing/upload_to_hf.py`](src/data_processing/upload_to_hf.py): upload to huggingface as private dataset
 
+(5) [`src/data_processing/upload_to_gcs.py`](src/data_processing/upload_to_gcs.py): upload to Google Cloud Storage.
+
 To run Dockerfile:
 ```shell
 cd src/data_processing;
@@ -88,18 +90,17 @@ GOOGLE_APPLICATION_CREDENTIALS=<PATH TO SERVICE ACCOUNT CREDENTIALS>
 Then `python upload_to_hf.py` to upload to huggingface as a private dataset; or 
 `python upload_to_gcs.py` to upload to GCS.
 
-**Cross validation, Data Versioning**
-- This container reads preprocessed dataset and creates validation split and uses dvc for versioning.
-- Input to this container is source GCS location, parameters if any, secrets needed - via docker
-- Output is flat file with cross validation splits
+To ease development, we have uploaded the reformatted dataset to
 
-(1) `src/validation/cv_val.py` - Since our dataset is quite large we decided to stratify based on species and kept 80% for training and 20% for validation. Our metrics will be monitored on this 20% validation set.
+- Huggingface: [`cnut1648/ScienceQA-LLAVA`](https://huggingface.co/datasets/cnut1648/ScienceQA-LLAVA/).
+- GCS: [`gs://ac215-sciencetutor/ScienceQA-LLAVA`](https://console.cloud.google.com/storage/browser/ac215-sciencetutor/ScienceQA-LLAVA). For TA, please contact us for access.
 
-(2) `requirements.txt` - We used following packages to help us with cross validation here - `iterative-stratification`
+**Data Versioning**
 
-(3) `src/validation/Dockerfile` - This dockerfile starts with  `python:3.8-slim-buster`. This <statement> attaches volume to the docker container and also uses secrets (not to be stored on GitHub) to connect to GCS.
-
-To run Dockerfile - `Instructions here`
+We additionally use `dvc` to version control the dataset.
+Specifically, `src/data_processing/ScienceQA-LLAVA.dvc` is the dvc file that tracks the reformatted dataset. 
+The data is remotely tracked in GCS.
+To download the dataset, run `dvc pull` in `src/data_processing/`.
 
 **Notebooks**
 This folder contains code that is not part of container - for e.g: EDA, any 🔍 🕵️‍♀️ 🕵️‍♂️ crucial insights, reports or visualizations.
