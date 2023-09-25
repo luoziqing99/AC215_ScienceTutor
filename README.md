@@ -117,11 +117,25 @@ In this milestone, it is a placeholder for future implementation.
 ### Web Server Container
 This container serves as the frontend of our Science Tutor chatbot application. 
 It handles HTTP requests, provides a user interface, and communicates with the chatbot logic component.
+
+To build and run the container:
+```shell
+cd src/web_server;
+sh docker-shell.sh
+```
+
 In this milestone, it is a placeholder for future implementation.
 
 ### Chatbot Logic Container
 This container contains the core chatbot logic. 
 It processes user messages received from the web server container, conducts inference with the model API and generates responses.
+
+To build and run the container:
+```shell
+cd src/chatbot_logic;
+sh docker-shell.sh
+```
+
 In this milestone, it is a placeholder for future implementation.
 
 ### Other Containers
