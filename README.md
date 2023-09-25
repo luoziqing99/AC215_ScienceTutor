@@ -1,7 +1,19 @@
-AC215-Template (Milestone2)
-==============================
+# AC215 - Milestone2 - ScienceTutor
 
-Project Organization
+**Team Members**
+Sijia (Nancy) Li, Ziqing Luo, Yuqing Pan, Jiashu Xu, Xiaohan Zhao
+
+**Group Name**
+Science Tutor
+
+**Project**
+In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
+
+The app pipeline flow is as shown:
+
+<img src="pictures/science_tutor_app_pipeline.png"  width="600">
+
+## Project Organization
 ------------
       ├── LICENSE
       ├── README.md
@@ -29,26 +41,12 @@ Project Organization
 
 
 --------
-# AC215 - Milestone2 - ScienceTutor
 
-**Team Members**
-Sijia (Nancy) Li, Ziqing Luo, Yuqing Pan, Jiashu Xu, Xiaohan Zhao
-
-**Group Name**
-Science Tutor
-
-**Project**
-In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
-
-The app pipeline flow is as shown:
-
-<img src="pictures/science_tutor_app_pipeline.png"  width="600">
-
-### Milestone2 ###
+## Milestone2
 
 We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public dataset that consists of ~21k multimodal multiple choice questions covering a diverse set of science topics. The dataset is available at [Hugging Face](https://huggingface.co/datasets/derek-thomas/ScienceQA).
 
-#### Data Processing Container
+### Data Processing Container
 - The container load dataset from huggingface, and convert each data instance into LLaVA format to enforce format consistency as LLaVA training format.
 - The container will store the reformatted dataset, so that user can retrieve the dataset to (1) use for training (2) upload to GCP, huggingface etc, your choice.
 
@@ -106,8 +104,7 @@ Specifically, `src/data_processing/ScienceQA-LLAVA.dvc` is the dvc file that tra
 The data is remotely tracked in GCS.
 To download the dataset, run `dvc pull` after cloning the repo.
 
-#### Other Containers
-##### Model Training Container
+### Model Training Container
 This container will download the processed dataset and train the LLaVA model. The trained LLaVA model will be used in the chatbot logic component to perform the visual question answering (VQA) task. 
 
 (1) [`src/model_training/Dockerfile`](src/model_training/Dockerfile): Dockerfile to build the container
@@ -118,15 +115,16 @@ This container will download the processed dataset and train the LLaVA model. Th
 
 In this milestone, it is a placeholder for future implementation.
 
-##### Web Server Container
+### Web Server Container
 This container serves as the frontend of our Science Tutor chatbot application. 
 It handles HTTP requests, provides a user interface, and communicates with the chatbot logic component.
 In this milestone, it is a placeholder for future implementation.
 
-##### Chatbot Logic Container
+### Chatbot Logic Container
 This container contains the core chatbot logic. 
 It processes user messages received from the web server container, conducts inference with the model API and generates responses.
 In this milestone, it is a placeholder for future implementation.
 
+### Other Containers
 In addition to the existing containers, we may consider incorporating additional containers as the need arises. 
 This may include a database container for the storage of user message data, and a recommendation engine container housing the logic for recommending posts or videos based on the questions user asked.
