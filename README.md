@@ -40,6 +40,10 @@ Science Tutor
 **Project**
 In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
 
+The app pipeline flow is as shown:
+
+<img src="pictures/science_tutor_app_pipeline.png"  width="600">
+
 ### Milestone2 ###
 
 We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public dataset that consists of ~21k multimodal multiple choice questions covering a diverse set of science topics. The dataset is available at [Hugging Face](https://huggingface.co/datasets/derek-thomas/ScienceQA).
