@@ -14,7 +14,7 @@ The app pipeline flow is as shown:
 <img src="pictures/science_tutor_app_pipeline.png"  width="600">
 
 ## Project Organization
-------------
+
       ├── LICENSE
       ├── README.md
       ├── notebooks
@@ -38,9 +38,6 @@ The app pipeline flow is as shown:
                 ├── Dockerfile
                 ├── Pipfile
                 └── Pipfile.lock
-
-
---------
 
 ## Milestone2
 
