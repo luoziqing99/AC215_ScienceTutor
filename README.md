@@ -32,10 +32,12 @@ The app pipeline flow is as shown:
             │   └── requirements.txt
             ├── chatbot_logic
             │   ├── Dockerfile
+            │   ├── docker-shell.sh
             │   ├── Pipfile
             │   └── Pipfile.lock
             └── web_server
                 ├── Dockerfile
+                ├── docker-shell.sh
                 ├── Pipfile
                 └── Pipfile.lock
 
