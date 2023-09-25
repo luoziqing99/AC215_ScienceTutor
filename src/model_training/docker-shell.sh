@@ -7,8 +7,6 @@ set -e
 export IMAGE_NAME="model_training"
 export BASE_DIR=$(pwd)
 export SECRETS_DIR=$(pwd)/../../../secrets/
-# export PERSISTENT_DIR=$(pwd)/../persistent-folder/
-# export GOOGLE_APPLICATION_CREDENTIALS=$SECRETS_DIR/data-service-account.json
 
 # Build the image based on the Dockerfile
 docker build -t $IMAGE_NAME -f Dockerfile .
