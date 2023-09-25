@@ -39,6 +39,4 @@ bucket_name = 'ac215-sciencetutor'
 gcs_folder_path = 'ScienceQA-LLAVA'
 local_folder_path = './ScienceQA-LLAVA'
 
-print(os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'))
-
 download_blob(bucket_name, gcs_folder_path, local_folder_path)
