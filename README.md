@@ -104,7 +104,7 @@ To download the dataset, run `dvc pull` after cloning the repo.
 
 #### Other Containers
 ##### Model Training Container
-This container will download the processed dataset and train the LLaVA model. 
+This container will download the processed dataset and train the LLaVA model. The trained LLaVA model will be used in the chatbot logic component to perform the visual question answering (VQA) task. 
 
 (1) [`src/model_training/Dockerfile`](src/model_training/Dockerfile): Dockerfile to build the container
 
