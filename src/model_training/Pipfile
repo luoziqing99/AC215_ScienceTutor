@@ -11,6 +11,7 @@ datasets = "*"
 tqdm = "*"
 pandas = "*"
 python-dotenv = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.9"
