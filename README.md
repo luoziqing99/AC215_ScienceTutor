@@ -1,8 +1,6 @@
 AC215-Template (Milestone2)
 ==============================
 
-AC215 - Milestone2
-
 Project Organization
 ------------
       ├── LICENSE
@@ -106,7 +104,15 @@ To download the dataset, run `dvc pull` after cloning the repo.
 
 #### Other Containers
 ##### Model Training Container
+This container will download the processed dataset and train the LLaVA model. 
 
+(1) [`src/model_training/Dockerfile`](src/model_training/Dockerfile): Dockerfile to build the container
+
+(2) [`src/model_training/download_from_hf.py`](src/model_training/download_from_hf.py): download the dataset from huggingface
+
+(3) [`src/model_training/download_from_gcs.py`](src/model_training/download_from_gcs.py): download the dataset from Google Cloud Storage
+
+In this milestone, it is a placeholder for future implementation.
 
 ##### Web Server Container
 This container serves as the frontend of our Science Tutor chatbot application. 
