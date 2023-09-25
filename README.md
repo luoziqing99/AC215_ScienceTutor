@@ -28,8 +28,11 @@ The app pipeline flow is as shown:
             │   └── requirements.txt
             ├── model_training
             │   ├── Dockerfile
-            │   ├── model_training.py
-            │   └── requirements.txt
+            |   ├── docker-shell.sh
+            |   ├── Pipfile
+            |   ├── Pipfile.lock
+            │   ├── download_from_gcs.py
+            │   └── download_from_hf.py
             ├── chatbot_logic
             │   ├── Dockerfile
             │   ├── docker-shell.sh
@@ -106,13 +109,17 @@ To download the dataset, run `dvc pull` after cloning the repo.
 ### Model Training Container
 This container will download the processed dataset and train the LLaVA model. The trained LLaVA model will be used in the chatbot logic component to perform the visual question answering (VQA) task. 
 
-(1) [`src/model_training/docker-shell.sh`](src/model_training/docker-shell.sh): shell script to automatically build and run the container using `./docker-shell.sh`
+To build and run the container:
+```shell
+cd src/model_training
+./docker-shell.sh
+```
 
-(2) [`src/model_training/Dockerfile`](src/model_training/Dockerfile): Dockerfile to build the container
+Files for downloading the datasets:
 
-(3) [`src/model_training/download_from_hf.py`](src/model_training/download_from_hf.py): download the dataset from huggingface
+(1) [`src/model_training/download_from_hf.py`](src/model_training/download_from_hf.py): download the dataset from huggingface
 
-(4) [`src/model_training/download_from_gcs.py`](src/model_training/download_from_gcs.py): download the dataset from Google Cloud Storage
+(2) [`src/model_training/download_from_gcs.py`](src/model_training/download_from_gcs.py): download the dataset from Google Cloud Storage
 
 In this milestone, it is a placeholder for future implementation.
 
@@ -122,7 +129,7 @@ It handles HTTP requests, provides a user interface, and communicates with the c
 
 To build and run the container:
 ```shell
-cd src/web_server;
+cd src/web_server
 sh docker-shell.sh
 ```
 
@@ -134,7 +141,7 @@ It processes user messages received from the web server container, conducts infe
 
 To build and run the container:
 ```shell
-cd src/chatbot_logic;
+cd src/chatbot_logic
 sh docker-shell.sh
 ```
 
