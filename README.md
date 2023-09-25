@@ -12,10 +12,6 @@ Project Organization
       ├── requirements.txt
       ├── setup.py
       └── src
-            ├── chatbot_logic
-            │   ├── Dockerfile
-            │   ├── chatbot_logic.py
-            │   └── requirements.txt
             ├── data_processing
             │   ├── Dockerfile
             │   ├── data_processing.py
@@ -24,10 +20,14 @@ Project Organization
             │   ├── Dockerfile
             │   ├── model_training.py
             │   └── requirements.txt
+            ├── chatbot_logic
+            │   ├── Dockerfile
+            │   ├── Pipfile
+            │   └── Pipfile.lock
             └── web_server
-                  ├── Dockerfile
-                  ├── web_server.py
-                  └── requirements.txt
+                ├── Dockerfile
+                ├── Pipfile
+                └── Pipfile.lock
 
 
 --------
@@ -46,7 +46,7 @@ In this project we aim to develop an educational application that provides insta
 
 We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public dataset that consists of ~21k multimodal multiple choice questions covering a diverse set of science topics. The dataset is available at [Hugging Face](https://huggingface.co/datasets/derek-thomas/ScienceQA).
 
-#### Preprocess container
+#### Data Processing Container
 - The container load dataset from huggingface, and convert each data instance into LLaVA format to enforce format consistency as LLaVA training format.
 - The container will store the reformatted dataset, so that user can retrieve the dataset to (1) use for training (2) upload to GCP, huggingface etc, your choice.
 
@@ -99,8 +99,24 @@ To ease development, we have uploaded the reformatted dataset to
 - GCS: [`gs://ac215-sciencetutor/ScienceQA-LLAVA`](https://console.cloud.google.com/storage/browser/ac215-sciencetutor/ScienceQA-LLAVA). For TA, please contact us for access.
 
 #### Data Versioning
-
 We additionally use `dvc` to version control the dataset.
 Specifically, `src/data_processing/ScienceQA-LLAVA.dvc` is the dvc file that tracks the reformatted dataset. 
 The data is remotely tracked in GCS.
 To download the dataset, run `dvc pull` after cloning the repo.
+
+#### Other Containers
+##### Model Training Container
+
+
+##### Web Server Container
+This container serves as the frontend of our Science Tutor chatbot application. 
+It handles HTTP requests, provides a user interface, and communicates with the chatbot logic component.
+In this milestone, it is a placeholder for future implementation.
+
+##### Chatbot Logic Container
+This container contains the core chatbot logic. 
+It processes user messages received from the web server container, conducts inference with the model API and generates responses.
+In this milestone, it is a placeholder for future implementation.
+
+In addition to the existing containers, we may consider incorporating additional containers as the need arises. 
+This may include a database container for the storage of user message data, and a recommendation engine container housing the logic for recommending posts or videos based on the questions user asked.
