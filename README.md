@@ -104,11 +104,13 @@ To download the dataset, run `dvc pull` after cloning the repo.
 ### Model Training Container
 This container will download the processed dataset and train the LLaVA model. The trained LLaVA model will be used in the chatbot logic component to perform the visual question answering (VQA) task. 
 
-(1) [`src/model_training/Dockerfile`](src/model_training/Dockerfile): Dockerfile to build the container
+(1) [`src/model_training/docker-shell.sh`](src/model_training/docker-shell.sh): shell script to automatically build and run the container using `./docker-shell.sh`
 
-(2) [`src/model_training/download_from_hf.py`](src/model_training/download_from_hf.py): download the dataset from huggingface
+(2) [`src/model_training/Dockerfile`](src/model_training/Dockerfile): Dockerfile to build the container
 
-(3) [`src/model_training/download_from_gcs.py`](src/model_training/download_from_gcs.py): download the dataset from Google Cloud Storage
+(3) [`src/model_training/download_from_hf.py`](src/model_training/download_from_hf.py): download the dataset from huggingface
+
+(4) [`src/model_training/download_from_gcs.py`](src/model_training/download_from_gcs.py): download the dataset from Google Cloud Storage
 
 In this milestone, it is a placeholder for future implementation.
 
