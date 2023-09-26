@@ -24,7 +24,9 @@ The app pipeline flow is as shown:
       └── src
             ├── data_processing
             │   ├── Dockerfile
-            │   ├── data_processing.py
+            │   ├── convert_scienceqa_to_llava.py
+            │   ├── upload_to_gcs.py
+            │   ├── upload_to_hf.py
             │   └── requirements.txt
             ├── model_training
             │   ├── Dockerfile
