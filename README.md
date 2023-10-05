@@ -113,7 +113,7 @@ Vertex AI showing our attempts for model training (currently we are still restri
 ### notebooks
 This folder contains code that is not part of container, for example, model training testing code for debugging purposes.
 
-[`notebooks/AC215_milestone3_model_training.ipynb`](notebooks/AC215_milestone3_model_training.ipynb) includes the codes we used for training our model on Colab.
+[`notebooks/AC215_milestone3_model_training.ipynb`](notebooks/AC215_milestone3_model_training.ipynb): This notebook includes the code we used for training our model on Colab.
 
 ### src
 This folder contains the development code for the ScienceTutor application.
