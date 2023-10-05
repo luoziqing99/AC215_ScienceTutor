@@ -1,4 +1,4 @@
-# AC215 - Milestone2 - ScienceTutor
+# AC215 - Milestone3 - ScienceTutor
 
 **Team Members**
 Sijia (Nancy) Li, Ziqing Luo, Yuqing Pan, Jiashu Xu, Xiaohan Zhao
@@ -29,7 +29,15 @@ The app pipeline flow is as shown:
             │   ├── upload_to_hf.py
             │   └── requirements.txt
             ├── model_training
-            │   ├── Dockerfile
+            │   ├── package
+                    ├── trainer
+                        ├── task.sh
+                    ├── setup.py
+                ├── cli.py
+                ├── cli.sh
+                ├── docker-entrypoint.sh
+                ├── docker-shell.sh
+            │   ├── Dockerfile ###change from this line
             |   ├── docker-shell.sh
             |   ├── Pipfile
             |   ├── Pipfile.lock
