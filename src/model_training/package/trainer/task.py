@@ -12,6 +12,10 @@ pip install flash-attn --no-build-isolation
 pip install fire
 cd LLaVA
 pip install -e .
+mkdir checkpoints
+cd checkpoints
+wget "https://huggingface.co/liuhaotian/llava-pretrain-vicuna-7b-v1.3/resolve/main/mm_projector.bin"
+cd ..
 
 # Weights and Biases
 wandb login "7c8a8658dd63a3d0259cf220ea3482c9e36431e5"
