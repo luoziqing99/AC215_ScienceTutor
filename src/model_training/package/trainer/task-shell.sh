@@ -26,7 +26,7 @@ deepspeed llava/train/train_mem.py \
     --mm_use_im_start_end False \
     --mm_use_im_patch_token False \
     --bf16 True \
-    --output_dir ./checkpoints/llava-vicuna-7b-v1.3-pretrain_lcs558k_plain-ScienceQA_QCM_LEA-12e \
+    --output_dir ./checkpoints/llava-vicuna-7b-v1.3-pretrain-ScienceQA_QCM_LEA \
     --num_train_epochs 1 \
     --per_device_train_batch_size 2 \
     --per_device_eval_batch_size 2 \
