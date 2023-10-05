@@ -12,6 +12,8 @@ tqdm = "*"
 pandas = "*"
 python-dotenv = "*"
 pillow = "*"
+gcloud = "*"
+gsutil = "*"
 
 [requires]
 python_version = "3.9"
