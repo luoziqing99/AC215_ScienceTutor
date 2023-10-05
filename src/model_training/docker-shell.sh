@@ -7,10 +7,18 @@ set -e
 export IMAGE_NAME="model_training"
 export BASE_DIR=$(pwd)
 export SECRETS_DIR=$(pwd)/../../../secrets/
+export GCS_BUCKET_URI="gs://ac215-sciencetutor-trainer"
+export GCP_PROJECT="ac215project-398401"
 
 # Build the image based on the Dockerfile
-docker build -t $IMAGE_NAME -f Dockerfile .
+docker build -t $IMAGE_NAME --platform=linux/arm64/v8 -f Dockerfile .
 
 # Run the container
 docker run --rm --name $IMAGE_NAME -ti \
--v "$BASE_DIR":/app -v "$SECRETS_DIR":/secrets $IMAGE_NAME
+-v "$BASE_DIR":/app \
+-v "$SECRETS_DIR":/secrets \
+-e GOOGLE_APPLICATION_CREDENTIALS=../secrets/model-trainer.json \
+-e GCP_PROJECT="$GCP_PROJECT" \
+-e GCS_BUCKET_URI="$GCS_BUCKET_URI" \
+-e WANDB_KEY=../secrets/wandb.txt \
+$IMAGE_NAME
