@@ -63,10 +63,17 @@
 
 ### Milestone3
 
-We further refined our data pipeline process for milestone 3 by forking the LLaVA repository and updating the code for passing in the ScienceQA that we preprocessed. By doing this, we customized the model to take into our own preprocessed ScienceQA dataset. 
+We further refined our data pipeline process for milestone 3 by forking the LLaVA repository and [updating the code for passing in the ScienceQA that we preprocessed](https://github.com/cnut1648/LLaVA). By doing this, we customized the model to take into our own preprocessed ScienceQA dataset. 
 
-Regarding the modeling process, we tried several optimization techniques to reduce memory usage: bf16, deepspeed ZERO-2, gradient checkpointing, gradient accumluation, and tf32. In our colab version, we use all those optimization techinques with A100 GPU. For Vertex AI, Google approved our request for 4 NVIDIA_TESLA_V100 GPU but we do not have NVIDIA_TESLA_A100 GPU:
-V100 unfortunately does not support bf16. We tried fp16 but due to Huggingface implementation of LLaMA, there is a data type conversion error in attention computation with fp16. Moreover, tf32 is also not supported. We found that we cannot load the model into the memory on Vertex AI, let alone training it.
+Regarding the modeling process, we tried several optimization techniques to reduce memory usage: 
+- bf16
+- deepspeed ZERO-2 for multi-GPU
+- gradient checkpointing
+- gradient accumulation
+- tf32
+
+In our colab version, we use all those optimization techniques with A100 GPU except deepspeed as we can only access 1 GPU. For Vertex AI, Google approved our request for 4 NVIDIA_TESLA_V100 GPU but we do not have NVIDIA_TESLA_A100 GPU:
+V100 unfortunately does not support bf16. We tried fp16 but due to Huggingface implementation of LLaMA (model that LLaVA is based on), there is a data type conversion error in attention computation with fp16. Moreover, tf32 is also not supported. We found that we cannot load the model into the memory using 4 V100 on Vertex AI, let alone training it.
 
 ## Experiment Tracking
 
