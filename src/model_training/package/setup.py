@@ -2,7 +2,15 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-# REQUIRED_PACKAGES = []
+REQUIRED_PACKAGES = [
+    "flash_attn",
+    "transformers",
+    "datasets",
+    "evaluate",
+    "fire",
+    "deepspeed",
+    "accelerate"
+]
 
 setup(
     name="ac215-sciencetutor-trainer",
