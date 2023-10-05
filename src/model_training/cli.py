@@ -21,13 +21,13 @@ aip.init(
          location=GCP_REGION, staging_bucket=GCS_BUCKET_URI)
 
 job_id = generate_uuid()
-DISPLAY_NAME = "jiashu-" + job_id
+DISPLAY_NAME = "lsj-" + job_id
 
 TRAIN_IMAGE = "us-docker.pkg.dev/vertex-ai/training/pytorch-gpu.1-13.py310:latest"
 
 job = aip.CustomPythonPackageTrainingJob(
     display_name=DISPLAY_NAME,
-    python_package_gcs_uri=f"{GCS_BUCKET_URI}/trainer2.tar.gz",
+    python_package_gcs_uri=f"{GCS_BUCKET_URI}/trainer.tar.gz",
     python_module_name="trainer.llava.train.train_mem",
     container_uri=TRAIN_IMAGE,
     project=GCP_PROJECT,
@@ -35,8 +35,8 @@ job = aip.CustomPythonPackageTrainingJob(
 
 CMDARGS = ["--epochs=1"]
 MODEL_DIR = GCS_BUCKET_URI
-TRAIN_COMPUTE = "n1-standard-4"
-TRAIN_GPU = "NVIDIA_TESLA_V100"
+TRAIN_COMPUTE = "a2-highgpu-1g"
+TRAIN_GPU = "NVIDIA_TESLA_A100"
 TRAIN_NGPU = 1
 
 # Run the training job on Vertex AI
