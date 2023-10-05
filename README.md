@@ -96,7 +96,7 @@ Vertex AI showing our attempts for model training (currently we are still restri
 
 ## Code Structure
 
-### Notebooks
+### notebooks
 This folder contains code that is not part of container, for example, model training testing code for debugging purposes.
 
 ### src
