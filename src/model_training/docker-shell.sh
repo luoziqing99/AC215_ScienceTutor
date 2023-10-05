@@ -12,7 +12,7 @@ export GCP_PROJECT="ac215project-398401"
 export WANDB_API_KEY=$(cat $(pwd)/../../../secrets/wandb.txt)
 
 # Build the image based on the Dockerfile
-docker build -t $IMAGE_NAME --platform=linux/arm64/v8 -f Dockerfile .
+docker build -t $IMAGE_NAME .
 
 # Run the container
 docker run --rm --name $IMAGE_NAME -ti \

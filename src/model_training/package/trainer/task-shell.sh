@@ -1,29 +1,16 @@
-#!/bin/bash
-
-# SQA
-git clone https://github.com/lupantech/ScienceQA.git
-cd ScienceQA
-mkdir data/scienceqa/images
-. tools/download.sh
-
-# LLAVA
-cd ..
-git clone https://github.com/haotian-liu/LLaVA.git
+git clone https://github.com/cnut1648/LLaVA
 pip install transformers datasets evaluate
 pip install flash_attn
 pip install fire
 cd LLaVA
 pip install -e .
+mkdir checkpoints
+cd checkpoints
+wget "https://huggingface.co/liuhaotian/llava-pretrain-vicuna-7b-v1.3/resolve/main/mm_projector.bin"
+cd ..
 
 # Weights and Biases
-wandb login $WANDB_API_KEY
-
-# Fine tuning model
-python scripts/convert_sqa_to_llava.py \
-    convert_to_llava \
-    --base-dir ../ScienceQA/data/scienceqa \
-    --prompt-format "QCM-LEA" \
-    --split train
+wandb login "7c8a8658dd63a3d0259cf220ea3482c9e36431e5"
 
 deepspeed llava/train/train_mem.py \
     --deepspeed ./scripts/zero2.json \
