@@ -57,9 +57,30 @@ The app pipeline flow is as shown:
                 ├── Pipfile
                 └── Pipfile.lock
 
-## Milestone2
+## Milestone3
 
-We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public dataset that consists of ~21k multimodal multiple choice questions covering a diverse set of science topics. The dataset is available at [Hugging Face](https://huggingface.co/datasets/derek-thomas/ScienceQA).
+Regarding the modeling process, Google approved our request for multiple GPU compute instances. However, we set up our training script so that we are able to pass in the arguments defining the number of GPUs to use. 
+
+
+## Experiment Tracking
+
+Below we can see the training output from our Weights & Biases Page. We used it to track different iterations of our model training. It was tracked using the wandb library we included inside of our `task.sh` shell script.
+
+<img width="1046" alt="image" src="https://github.com/luoziqing99/AC215_ScienceTutor/assets/69550825/491d3d82-b019-48ec-bb48-91c9381229da">
+
+## Serverless Training
+
+Inside our training container, we used the Google Cloud SDK TO launch training instances in the cloud. The image below are several runs of our model.
+
+To create a new serverless job we did the following commands:
+```shell
+cd src/model_training
+sh docker-shell.sh
+sh package-trainer.sh
+sh cli.sh
+```
+<img width="1362" alt="image" src="https://github.com/luoziqing99/AC215_ScienceTutor/assets/69550825/ce76b428-22a6-4bd6-af5e-2d323f935d6e">
+
 
 ### Data Processing Container
 - The container load dataset from huggingface, and convert each data instance into LLaVA format to enforce format consistency as LLaVA training format.
