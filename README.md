@@ -31,7 +31,8 @@
             │   ├── package
             │   │   ├── trainer
             │   │   │   ├── __init__.py
-            │   │   │   └── task.py
+            │   │   │   ├── task.py
+            │   │   │   └── wandb_api.py
             │   │   ├── PKG-INFO
             │   │   ├── setup.cfg
             │   │   └── setup.py
@@ -190,7 +191,7 @@ Files for downloading the datasets:
 
 (3) [`src/model_training/Dockerfile`](src/model_training/Dockerfile), [`src/model_training/Pipfile`](src/model_training/Pipfile), [`src/model_training/Pipfile.lock`](src/model_training/Pipfile.lock), [`src/model_training/docker-entrypoint.sh`](src/model_training/docker-entrypoint.sh), [`src/model_training/docker-shell.sh`](src/model_training/docker-shell.sh): These are the files to build the container.
 
-(4) [`src/model_training/package`](src/model_training/package): This is the folder that contains the model training code.
+(4) [`src/model_training/package/`](src/model_training/package/): This is the folder that contains the model training code and wandb_api_key upload code.
 
 (5) [`src/model_training/package-trainer.sh`](src/model_training/package-trainer.sh): This is the script for packaging the model training code into `trainer.tar.gz`.
 
