@@ -15,7 +15,7 @@
       │   ├── gcs_model_bucket.png
       │   ├── vertex_ai_model_training.png
       │   ├── wandb_system.png
-      │   └── wandb_train1.png
+      │   └── wandb_train.png
       ├── references
       ├── reports
       └── src
@@ -81,7 +81,7 @@ V100 unfortunately does not support bf16. We tried fp16 but due to Huggingface i
 
 ## Experiment Tracking
 
-The images below show the training output from our Weights & Biases Page. The Weights & Biases Page tracks the different iterations of our model training. This is done by using the `wandb` library that we included in our `task.py` Python script.
+The images below show the training output from our Weights & Biases Page. The Weights & Biases Page tracks our model training process. This is done by using the `wandb` library that we included in our `task.py` Python script.
 
 Train Tracking:
 <img width="1362" alt="image" src="pictures/wandb_train.png">
@@ -112,6 +112,8 @@ Vertex AI showing our attempts for model training (currently we are still restri
 
 ### notebooks
 This folder contains code that is not part of container, for example, model training testing code for debugging purposes.
+
+[`notebooks/AC215_milestone3_model_training.ipynb`](notebooks/AC215_milestone3_model_training.ipynb) includes the codes we used for training our model on Colab.
 
 ### src
 This folder contains the development code for the ScienceTutor application.
