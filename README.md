@@ -15,8 +15,7 @@
       │   ├── gcs_model_bucket.png
       │   ├── vertex_ai_model_training.png
       │   ├── wandb_system.png
-      │   ├── wandb_train1.png
-      │   └── wandb_train2.png
+      │   └── wandb_train1.png
       ├── references
       ├── reports
       └── src
@@ -85,8 +84,7 @@ V100 unfortunately does not support bf16. We tried fp16 but due to Huggingface i
 The images below show the training output from our Weights & Biases Page. The Weights & Biases Page tracks the different iterations of our model training. This is done by using the `wandb` library that we included in our `task.py` Python script.
 
 Train Tracking:
-<img width="1362" alt="image" src="pictures/wandb_train1.png">
-<img width="1362" alt="image" src="pictures/wandb_train2.png">
+<img width="1362" alt="image" src="pictures/wandb_train.png">
 
 System Tracking:
 <img width="1362" alt="image" src="pictures/wandb_system.png">
