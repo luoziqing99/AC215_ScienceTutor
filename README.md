@@ -38,7 +38,7 @@ The app pipeline flow is as shown:
             │   ├── cli.sh
             │   ├── docker-entrypoint.sh
             │   ├── docker-shell.sh
-            │   ├── Dockerfile ###change from this line
+            │   ├── Dockerfile
             │   ├── download_from_gcs.py
             │   └── download_from_hf.py
             │   └── package-trainer.py
