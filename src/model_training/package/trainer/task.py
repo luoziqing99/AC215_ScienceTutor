@@ -1,11 +1,13 @@
 import subprocess
 import os
+from .wandb_api import wandb_apikey
 
-script = """\
+wandb_key = wandb_apikey()
+
+script = f"""\
 git clone https://github.com/cnut1648/LLaVA
 pip install transformers datasets evaluate
 pip install ninja
-pip install flash-attn --no-build-isolation
 pip install fire
 cd LLaVA
 pip install -e .
@@ -15,20 +17,17 @@ wget "https://huggingface.co/liuhaotian/llava-pretrain-vicuna-7b-v1.3/resolve/ma
 cd ..
 
 # Weights and Biases
-wandb login "7c8a8658dd63a3d0259cf220ea3482c9e36431e5"
+wandb login "{wandb_key}"
 
 pip list
 
-pip install flash-attn --no-build-isolation
-
 deepspeed llava/train/train_mem.py \
-    --deepspeed ./scripts/zero2.json \
+    --deepspeed ./scripts/zero3_offload.json \
     --lora_enable True \
-    --bits 4 \
     --model_name_or_path lmsys/vicuna-7b-v1.3 \
     --version v1 \
-    --data_path ../ScienceQA/data/scienceqa/llava_train_QCM-LEA.json \
-    --image_folder ../ScienceQA/data/scienceqa/images/train \
+    --data_path "NOT USED" \
+    --image_folder "NOT USED" \
     --vision_tower openai/clip-vit-large-patch14 \
     --pretrain_mm_mlp_adapter ./checkpoints/mm_projector.bin \
     --mm_vision_select_layer -2 \
