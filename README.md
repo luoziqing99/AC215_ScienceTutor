@@ -2,7 +2,7 @@
 
 ## Application Pipeline Flow
 
-<img src="pictures/science_tutor_app_pipeline.png"  width="600">
+<img width="1362" alt="image" src="pictures/science_tutor_app_pipeline.png">
 
 ## Project Organization
       .
@@ -11,7 +11,12 @@
       ├── notebooks
       │   └── AC215_milestone3_model_training.ipynb
       ├── pictures
-      │   └── science_tutor_app_pipeline.png
+      │   ├── science_tutor_app_pipeline.png
+      │   ├── gcs_model_bucket.png
+      │   ├── vertex_ai_model_training.png
+      │   ├── wandb_system.png
+      │   ├── wandb_train1.png
+      │   └── wandb_train2.png
       ├── references
       ├── reports
       └── src
@@ -26,8 +31,7 @@
             │   ├── package
             │   │   ├── trainer
             │   │   │   ├── __init__.py
-            │   │   │   ├── task.py
-            │   │   │   └── task.sh
+            │   │   │   └── task.py
             │   │   ├── PKG-INFO
             │   │   ├── setup.cfg
             │   │   └── setup.py
@@ -77,9 +81,14 @@ V100 unfortunately does not support bf16. We tried fp16 but due to Huggingface i
 
 ## Experiment Tracking
 
-The image below shows the training output from our Weights & Biases Page. The Weights & Biases Page tracks the different iterations of our model training. This is done by using the `wandb` library that we included in our `task.py` Python script.
+The images below show the training output from our Weights & Biases Page. The Weights & Biases Page tracks the different iterations of our model training. This is done by using the `wandb` library that we included in our `task.py` Python script.
 
-<img width="1046" alt="image" src="https://github.com/luoziqing99/AC215_ScienceTutor/assets/69550825/491d3d82-b019-48ec-bb48-91c9381229da">
+Train Tracking:
+<img width="1362" alt="image" src="pictures/wandb_train1.png">
+<img width="1362" alt="image" src="pictures/wandb_train2.png">
+
+System Tracking:
+<img width="1362" alt="image" src="pictures/wandb_system.png">
 
 ## Serverless Training
 
@@ -94,11 +103,10 @@ sh cli.sh
 ```
 
 Google Cloud Storage Bucket with our training code stored in `trainer.tar.gz`:
-
+<img width="1362" alt="image" src="pictures/gcs_model_bucket.png">
 
 Vertex AI showing our attempts for model training (currently we are still restricted by Vertex AI's GPU quota and cannot load our model into memory):
-
-<img width="1362" alt="image" src="https://github.com/luoziqing99/AC215_ScienceTutor/assets/69550825/ce76b428-22a6-4bd6-af5e-2d323f935d6e">
+<img width="1362" alt="image" src="pictures/vertex_ai_model_training.png">
 
 
 ## Code Structure
