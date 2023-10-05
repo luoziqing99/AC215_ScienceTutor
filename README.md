@@ -25,24 +25,27 @@ The app pipeline flow is as shown:
             ├── data_processing
             │   ├── Dockerfile
             │   ├── convert_scienceqa_to_llava.py
+            │   ├── ScienceQA-LLAVA.dvc
             │   ├── upload_to_gcs.py
             │   ├── upload_to_hf.py
             │   └── requirements.txt
             ├── model_training
             │   ├── package
-                    ├── trainer
-                        ├── task.sh
-                    ├── setup.py
-                ├── cli.py
-                ├── cli.sh
-                ├── docker-entrypoint.sh
-                ├── docker-shell.sh
+            │       ├── trainer
+            │           ├── task.sh
+            │       ├── setup.py
+            │   ├── cli.py
+            │   ├── cli.sh
+            │   ├── docker-entrypoint.sh
+            │   ├── docker-shell.sh
             │   ├── Dockerfile ###change from this line
-            |   ├── docker-shell.sh
-            |   ├── Pipfile
-            |   ├── Pipfile.lock
             │   ├── download_from_gcs.py
             │   └── download_from_hf.py
+            │   └── package-trainer.py
+            │   └── Pipfile
+            │   └── Pipfile.lock
+            │   └──upload_trainer_to_gcs.py
+            ├── secrets
             ├── chatbot_logic
             │   ├── Dockerfile
             │   ├── docker-shell.sh
