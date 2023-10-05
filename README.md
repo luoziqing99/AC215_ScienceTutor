@@ -159,10 +159,12 @@ We additionally use `dvc` to version control the dataset. Specifically, `src/dat
 #### (2) Model Training Container
 This container will download the processed dataset and train the LLaVA model. The trained LLaVA model will be used in the chatbot logic component to perform the visual question answering (VQA) task. 
 
-To build and run the container:
+To build and run the container, package the model training code, and send job to Vertex AI:
 ```shell
 cd src/model_training
-./docker-shell.sh
+sh docker-shell.sh
+sh package-trainer.sh
+sh cli.sh
 ```
 
 Files for downloading the datasets:
