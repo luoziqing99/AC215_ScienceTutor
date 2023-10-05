@@ -22,7 +22,7 @@ TRAIN_IMAGE = "us-docker.pkg.dev/vertex-ai/training/pytorch-gpu.1-13.py310:lates
 
 job = aip.CustomPythonPackageTrainingJob(
     display_name=DISPLAY_NAME,
-    python_package_gcs_uri=f"{GCS_BUCKET_URI}/ac215-sciencetutor-trainer.tar.gz",
+    python_package_gcs_uri=f"{GCS_BUCKET_URI}/trainer.tar.gz",
     script="trainer.task",
     container_uri=TRAIN_IMAGE,
     project=GCP_PROJECT,

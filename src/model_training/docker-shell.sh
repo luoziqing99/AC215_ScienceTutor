@@ -9,6 +9,7 @@ export BASE_DIR=$(pwd)
 export SECRETS_DIR=$(pwd)/../../../secrets/
 export GCS_BUCKET_URI="gs://ac215-sciencetutor-trainer"
 export GCP_PROJECT="ac215project-398401"
+export WANDB_API_KEY=$(cat $(pwd)/../../../secrets/wandb.txt)
 
 # Build the image based on the Dockerfile
 docker build -t $IMAGE_NAME --platform=linux/arm64/v8 -f Dockerfile .
@@ -20,5 +21,5 @@ docker run --rm --name $IMAGE_NAME -ti \
 -e GOOGLE_APPLICATION_CREDENTIALS=../secrets/model-trainer.json \
 -e GCP_PROJECT="$GCP_PROJECT" \
 -e GCS_BUCKET_URI="$GCS_BUCKET_URI" \
--e WANDB_KEY=../secrets/wandb.txt \
+-e WANDB_API_KEY="$WANDB_API_KEY" \
 $IMAGE_NAME
