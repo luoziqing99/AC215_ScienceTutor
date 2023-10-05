@@ -1,26 +1,18 @@
-# AC215 - Milestone3 - ScienceTutor
+# AC215 - ScienceTutor
 
-**Team Members**
-Sijia (Nancy) Li, Ziqing Luo, Yuqing Pan, Jiashu Xu, Xiaohan Zhao
-
-**Group Name**
-Science Tutor
-
-**Project**
-In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
-
-The app pipeline flow is as shown:
+## Application Pipeline Flow
 
 <img src="pictures/science_tutor_app_pipeline.png"  width="600">
 
 ## Project Organization
-
+      .
       ├── LICENSE
       ├── README.md
       ├── notebooks
+      ├── pictures
+      │     └── science_tutor_app_pipeline.png
       ├── references
-      ├── requirements.txt
-      ├── setup.py
+      ├── reports
       └── src
             ├── data_processing
             │   ├── Dockerfile
@@ -31,21 +23,24 @@ The app pipeline flow is as shown:
             │   └── requirements.txt
             ├── model_training
             │   ├── package
-            │       ├── trainer
-            │           ├── task.sh
-            │       ├── setup.py
+            │   │   ├── trainer
+            │   │   │   ├── __init__.py
+            │   │   │   ├── task.py
+            │   │   │   └── task.sh
+            │   │   ├── PKG-INFO
+            │   │   ├── setup.cfg
+            │   │   └── setup.py
             │   ├── cli.py
             │   ├── cli.sh
             │   ├── docker-entrypoint.sh
             │   ├── docker-shell.sh
             │   ├── Dockerfile
             │   ├── download_from_gcs.py
-            │   └── download_from_hf.py
-            │   └── package-trainer.py
-            │   └── Pipfile
-            │   └── Pipfile.lock
+            │   ├── download_from_hf.py
+            │   ├── package-trainer.sh
+            │   ├── Pipfile
+            │   ├── Pipfile.lock
             │   └──upload_trainer_to_gcs.py
-            ├── secrets
             ├── chatbot_logic
             │   ├── Dockerfile
             │   ├── docker-shell.sh
@@ -57,10 +52,20 @@ The app pipeline flow is as shown:
                 ├── Pipfile
                 └── Pipfile.lock
 
-## Milestone3
+## AC215 - Milestone3 - ScienceTutor
 
-Regarding the modeling process, Google approved our request for multiple GPU compute instances. However, we set up our training script so that we are able to pass in the arguments defining the number of GPUs to use. 
+**Team Members** Sijia (Nancy) Li, Ziqing Luo, Yuqing Pan, Jiashu Xu, Xiaohan Zhao
 
+**Group Name** Science Tutor
+
+**Project** In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
+
+### Milestone3
+
+We further refined our data pipeline process for milestone 3 by forking the LLaVA repository and updating the code for passing in the ScienceQA that we preprocessed. By doing this, we customized the model to take into our own preprocessed ScienceQA dataset. 
+
+Regarding the modeling process, Google approved our request for 4 NVIDIA_TESLA_V100 GPU compute instances. We tried several optimization techniques to reduce memory usage: bf16, deepspeed ZERO-2, gradient checkpointing, gradient accumluation, and tf32. In our colab version we use all those optimization techinques. Yet for vertex ai that has V100 instaed of A100:
+V100 unfortunately does not support bf16. We tried fp16 but due to huggingface implementation of llama, there is a data type conversation error in attention computation with fp16. Moreover tf32 is also not supported. We found that we cannot even load the model into the memory, let alone training it.
 
 ## Experiment Tracking
 
