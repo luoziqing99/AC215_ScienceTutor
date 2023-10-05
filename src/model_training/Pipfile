@@ -14,6 +14,7 @@ python-dotenv = "*"
 pillow = "*"
 gcloud = "*"
 gsutil = "*"
+wandb = "*"
 
 [requires]
 python_version = "3.9"

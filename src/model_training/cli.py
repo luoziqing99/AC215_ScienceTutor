@@ -35,8 +35,8 @@ job = aip.CustomPythonPackageTrainingJob(
 
 CMDARGS = ["--epochs=1"]
 MODEL_DIR = GCS_BUCKET_URI
-TRAIN_COMPUTE = "a2-highgpu-1g"
-TRAIN_GPU = "NVIDIA_TESLA_A100"
+TRAIN_COMPUTE = "n1-standard-4"
+TRAIN_GPU = "NVIDIA_TESLA_V100"
 TRAIN_NGPU = 1
 
 # Run the training job on Vertex AI

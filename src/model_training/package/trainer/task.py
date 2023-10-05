@@ -1,8 +1,5 @@
 import subprocess
 import os
-# from dotenv import load_dotenv
-
-# load_dotenv()
 
 script = """\
 git clone https://github.com/cnut1648/LLaVA
