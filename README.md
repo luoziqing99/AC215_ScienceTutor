@@ -9,8 +9,9 @@
       ├── LICENSE
       ├── README.md
       ├── notebooks
+      │   └── AC215_milestone3_model_training.ipynb
       ├── pictures
-      │     └── science_tutor_app_pipeline.png
+      │   └── science_tutor_app_pipeline.png
       ├── references
       ├── reports
       └── src
@@ -64,18 +65,18 @@
 
 We further refined our data pipeline process for milestone 3 by forking the LLaVA repository and updating the code for passing in the ScienceQA that we preprocessed. By doing this, we customized the model to take into our own preprocessed ScienceQA dataset. 
 
-Regarding the modeling process, Google approved our request for 4 NVIDIA_TESLA_V100 GPU compute instances. We tried several optimization techniques to reduce memory usage: bf16, deepspeed ZERO-2, gradient checkpointing, gradient accumluation, and tf32. In our colab version we use all those optimization techinques. Yet for vertex ai that has V100 instaed of A100:
-V100 unfortunately does not support bf16. We tried fp16 but due to huggingface implementation of llama, there is a data type conversation error in attention computation with fp16. Moreover tf32 is also not supported. We found that we cannot even load the model into the memory, let alone training it.
+Regarding the modeling process, we tried several optimization techniques to reduce memory usage: bf16, deepspeed ZERO-2, gradient checkpointing, gradient accumluation, and tf32. In our colab version, we use all those optimization techinques with A100 GPU. For Vertex AI, Google approved our request for 4 NVIDIA_TESLA_V100 GPU but we do not have NVIDIA_TESLA_A100 GPU:
+V100 unfortunately does not support bf16. We tried fp16 but due to Huggingface implementation of LLaMA, there is a data type conversion error in attention computation with fp16. Moreover, tf32 is also not supported. We found that we cannot load the model into the memory on Vertex AI, let alone training it.
 
 ## Experiment Tracking
 
-Below we can see the training output from our Weights & Biases Page. We used it to track different iterations of our model training. It was tracked using the wandb library we included inside of our `task.sh` shell script.
+The image below shows the training output from our Weights & Biases Page. The Weights & Biases Page tracks the different iterations of our model training. This is done by using the `wandb` library that we included in our `task.py` Python script.
 
 <img width="1046" alt="image" src="https://github.com/luoziqing99/AC215_ScienceTutor/assets/69550825/491d3d82-b019-48ec-bb48-91c9381229da">
 
 ## Serverless Training
 
-Inside our training container, we used the Google Cloud SDK TO launch training instances in the cloud. The image below are several runs of our model.
+There are three main steps to launch training instances in the cloud: (1) run and build model training container, (2) package model training code and upload into a bucket in Google Cloud Storage, and (3) run the model on Vertex AI. 
 
 To create a new serverless job we did the following commands:
 ```shell
@@ -84,25 +85,38 @@ sh docker-shell.sh
 sh package-trainer.sh
 sh cli.sh
 ```
+
+Google Cloud Storage Bucket with our training code stored in `trainer.tar.gz`:
+
+
+Vertex AI showing our attempts for model training (currently we are still restricted by Vertex AI's GPU quota and cannot load our model into memory):
+
 <img width="1362" alt="image" src="https://github.com/luoziqing99/AC215_ScienceTutor/assets/69550825/ce76b428-22a6-4bd6-af5e-2d323f935d6e">
 
 
-### Data Processing Container
-- The container load dataset from huggingface, and convert each data instance into LLaVA format to enforce format consistency as LLaVA training format.
-- The container will store the reformatted dataset, so that user can retrieve the dataset to (1) use for training (2) upload to GCP, huggingface etc, your choice.
+## Code Structure
 
-(1) [`src/data_processing/convert_scienceqa_to_llava.py`](src/data_processing/convert_scienceqa_to_llava.py): conversion code
+### Notebooks
+This folder contains code that is not part of container, for example, model training testing code for debugging purposes.
 
-(2) [`src/data_processing/requirements.txt`](src/data_processing/requirements.txt): required packages
+### src
+This folder contains the development code for the ScienceTutor application.
 
-(3) [`src/data_processing/Dockerfile`](src/data_processing/Dockerfile): Dockerfile to build the container
+#### (1) Data Processing Container
+- This container loads the dataset from huggingface, and convert each data instance into LLaVA format to enforce format consistency as LLaVA training format.
+- This container will store the reformatted dataset, so that user can retrieve the dataset to (1) use for training (2) upload to GCP, huggingface etc, your choice.
 
-(4) [`src/data_processing/upload_to_hf.py`](src/data_processing/upload_to_hf.py): upload to huggingface as private dataset
+(1) [`src/data_processing/convert_scienceqa_to_llava.py`](src/data_processing/convert_scienceqa_to_llava.py): This script converts the ScienceQA dataset downloaded from Huggingface into the data format that can be passed into the LLaVA model.
 
-(5) [`src/data_processing/upload_to_gcs.py`](src/data_processing/upload_to_gcs.py): upload to Google Cloud Storage.
+(2) [`src/data_processing/requirements.txt`](src/data_processing/requirements.txt): This file specifies the packages required to be installed.
 
-However, as mentioned in [Data Versioning](#data-versioning), we use `dvc` to version control the dataset.
-You can simply `dvc pull` to obtain the processed dataset, and can safely skip the rest of this section.
+(3) [`src/data_processing/Dockerfile`](src/data_processing/Dockerfile): This is the Dockerfile to build the container.
+
+(4) [`src/data_processing/upload_to_hf.py`](src/data_processing/upload_to_hf.py): This script uploads the data to Huggingface as a private dataset.
+
+(5) [`src/data_processing/upload_to_gcs.py`](src/data_processing/upload_to_gcs.py): This script uploads the data to Google Cloud Storage.
+
+However, as mentioned in [Data Versioning](#data-versioning), we use `dvc` to version control the dataset. You can simply `dvc pull` to obtain the processed dataset, and can safely skip the rest of this section.
 
 To run Dockerfile:
 ```shell
@@ -139,13 +153,10 @@ To ease development, we have uploaded the reformatted dataset to
 - Huggingface: [`cnut1648/ScienceQA-LLAVA`](https://huggingface.co/datasets/cnut1648/ScienceQA-LLAVA/).
 - GCS: [`gs://ac215-sciencetutor/ScienceQA-LLAVA`](https://console.cloud.google.com/storage/browser/ac215-sciencetutor/ScienceQA-LLAVA). For TA, please contact us for access.
 
-#### Data Versioning
-We additionally use `dvc` to version control the dataset.
-Specifically, `src/data_processing/ScienceQA-LLAVA.dvc` is the dvc file that tracks the reformatted dataset. 
-The data is remotely tracked in GCS.
-To download the dataset, run `dvc pull` after cloning the repo.
+##### Data Versioning
+We additionally use `dvc` to version control the dataset. Specifically, `src/data_processing/ScienceQA-LLAVA.dvc` is the dvc file that tracks the reformatted dataset. The data is remotely tracked in GCS. To download the dataset, run `dvc pull` after cloning the repo.
 
-### Model Training Container
+#### (2) Model Training Container
 This container will download the processed dataset and train the LLaVA model. The trained LLaVA model will be used in the chatbot logic component to perform the visual question answering (VQA) task. 
 
 To build and run the container:
@@ -156,15 +167,25 @@ cd src/model_training
 
 Files for downloading the datasets:
 
-(1) [`src/model_training/download_from_hf.py`](src/model_training/download_from_hf.py): download the dataset from huggingface
+(1) [`src/model_training/download_from_hf.py`](src/model_training/download_from_hf.py): This script downloads the dataset from Huggingface.
 
-(2) [`src/model_training/download_from_gcs.py`](src/model_training/download_from_gcs.py): download the dataset from Google Cloud Storage
+(2) [`src/model_training/download_from_gcs.py`](src/model_training/download_from_gcs.py): This script downloads the dataset from Google Cloud Storage.
 
-In this milestone, it is a placeholder for future implementation.
+(3) [`src/model_training/Dockerfile`](src/model_training/Dockerfile), [`src/model_training/Pipfile`](src/model_training/Pipfile), [`src/model_training/Pipfile.lock`](src/model_training/Pipfile.lock), [`src/model_training/docker-entrypoint.sh`](src/model_training/docker-entrypoint.sh), [`src/model_training/docker-shell.sh`](src/model_training/docker-shell.sh): These are the files to build the container.
 
-### Web Server Container
-This container serves as the frontend of our Science Tutor chatbot application. 
-It handles HTTP requests, provides a user interface, and communicates with the chatbot logic component.
+(4) [`src/model_training/package`](src/model_training/package): This is the folder that contains the model training code.
+
+(5) [`src/model_training/package-trainer.sh`](src/model_training/package-trainer.sh): This is the script for packaging the model training code into `trainer.tar.gz`.
+
+(6) [`src/model_training/upload_trainer_to_gcs.py`](src/model_training/upload_trainer_to_gcs.py): This script uploads the `trainer.tar.gz` containing the model training code to Google Cloud Storage Bucket.
+
+(7) [`src/model_training/upload_model_to_gcs.py`](src/model_training/upload_model_to_gcs.py): This script uploads the `checkpoints` folder containing the trained model checkpoints to Google Cloud Storage Bucket. 
+
+(8) [`src/model_training/cli.py`](src/model_training/cli.py), [`src/model_training/cli.sh`](src/model_training/cli.sh): These are the scripts for command-line interface (CLI) to create custom model training jobs on Vertex AI. 
+
+
+#### (3) Web Server Container
+This container serves as the frontend of our Science Tutor chatbot application. It handles HTTP requests, provides a user interface, and communicates with the chatbot logic component.
 
 To build and run the container:
 ```shell
@@ -174,9 +195,8 @@ sh docker-shell.sh
 
 In this milestone, it is a placeholder for future implementation.
 
-### Chatbot Logic Container
-This container contains the core chatbot logic. 
-It processes user messages received from the web server container, conducts inference with the model API and generates responses.
+#### (4) Chatbot Logic Container
+This container contains the core chatbot logic. It processes user messages received from the web server container, conducts inference with the model API and generates responses.
 
 To build and run the container:
 ```shell
@@ -186,6 +206,6 @@ sh docker-shell.sh
 
 In this milestone, it is a placeholder for future implementation.
 
-### Other Containers
+#### (5) Other Containers
 In addition to the existing containers, we may consider incorporating additional containers as the need arises. 
 This may include a database container for the storage of user message data, and a recommendation engine container housing the logic for recommending posts or videos based on the questions user asked.
