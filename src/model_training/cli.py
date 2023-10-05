@@ -16,9 +16,9 @@ def generate_uuid(length: int = 8) -> str:
 aip.init(project=GCP_PROJECT, location=GCP_REGION, staging_bucket=GCS_BUCKET_URI)
 
 job_id = generate_uuid()
-DISPLAY_NAME = "mushroom_" + job_id
+DISPLAY_NAME = "sciencetutor_" + job_id
 
-TRAIN_IMAGE = "us-docker.pkg.dev/vertex-ai/training/tf-gpu.2-12.py310:latest"
+TRAIN_IMAGE = "us-docker.pkg.dev/vertex-ai/training/pytorch-gpu.1-13.py310:latest"
 
 job = aip.CustomPythonPackageTrainingJob(
     display_name=DISPLAY_NAME,
