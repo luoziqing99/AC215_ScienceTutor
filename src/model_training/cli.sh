@@ -9,7 +9,7 @@ export EXECUTOR_IMAGE_URI="us-docker.pkg.dev/vertex-ai/training/pytorch-gpu.1-13
 export PYTHON_PACKAGE_URI=gs://ac215-sciencetutor-trainer/trainer.tar.gz
 export PYTHON_MODULE="trainer.task"
 export ACCELERATOR_TYPE="NVIDIA_TESLA_V100"
-export ACCELERATOR_COUNT=1
+export ACCELERATOR_COUNT=4
 export GCP_REGION="us-central1" # Adjust region based on you approved quotas for GPUs
 
 gcloud ai custom-jobs create \

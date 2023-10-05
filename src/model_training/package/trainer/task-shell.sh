@@ -25,7 +25,6 @@ deepspeed llava/train/train_mem.py \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
     --mm_use_im_patch_token False \
-    --bf16 True \
     --output_dir ./checkpoints/llava-vicuna-7b-v1.3-pretrain-ScienceQA_QCM_LEA-vertex \
     --num_train_epochs 1 \
     --per_device_train_batch_size 2 \
@@ -40,7 +39,6 @@ deepspeed llava/train/train_mem.py \
     --warmup_ratio 0.03 \
     --lr_scheduler_type "cosine" \
     --logging_steps 1 \
-    --tf32 True \
     --model_max_length 512 \
     --gradient_checkpointing True \
     --dataloader_num_workers 4 \
