@@ -1,8 +1,13 @@
 import subprocess
 import os
 from .wandb_api import wandb_apikey
+from .upload_model_to_gcs import upload_model_checkpoint
 
+# Get wandb key from gcs
 wandb_key = wandb_apikey()
+
+# Name the model checkpoint
+checkpoint_name = "llava-vicuna-7b-v1.3-pretrain-ScienceQA_QCM_LEA-vertex"
 
 script = f"""\
 git clone https://github.com/cnut1648/LLaVA
@@ -33,7 +38,7 @@ deepspeed llava/train/train_mem.py \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
     --mm_use_im_patch_token False \
-    --output_dir ./checkpoints/llava-vicuna-7b-v1.3-pretrain-ScienceQA_QCM_LEA-vertex \
+    --output_dir ./checkpoints/{checkpoint_name} \
     --num_train_epochs 1 \
     --per_device_train_batch_size 2 \
     --per_device_eval_batch_size 2 \
@@ -71,3 +76,6 @@ if process.returncode == 0:
     print("Shell script executed successfully")
 else:
     print(f"Shell script failed with return code {process.returncode}")
+
+# Upload model checkpoint to gcs
+upload_model_checkpoint(checkpoint_name)
