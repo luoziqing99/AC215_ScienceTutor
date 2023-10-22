@@ -132,6 +132,26 @@ Total: 4241, Correct: 2779, Accuracy: 65.53%, IMG-Accuracy: 63.86%
 ```
 which is pretty close to the performance reported by the LLaVA 13B (~70%). Note that that is a larger model with a possibly more careful hyperparameter tuning while we only train for one epoch with a default hyperparameter.
 
+## Web Server (aka Model Deployment)
+We have deployed our model such that user can interact with our model through a web interface. In `web_server/` directory, you can build the `Dockerfile`.
+We have configurated the UI such that
+- It supports multi-GPU inference. It will dynamically allocate GPUs memory available to your system.   
+- It loads the 4bit quantized model to further reduce the memory usage.
+- The model it loaded is our LLaVA 7b model.
+- We export port 7860 for the web server. 
+ 
+To run the container, you need to install a GPU-enabled toolkit. For example, on Arch Linux it is [nvidia-container-toolkit](https://aur.archlinux.org/packages/nvidia-container-toolkit/).
+```shell
+docker build -t ui .
+
+# use all your GPUs 
+# it will hang, until you manually terminate the container
+# access the web server at http://localhost:7860
+docker run --gpus all -p 7860:7860 -t ui
+```
+An example conversation with our model is shown below:
+<img width="1362" alt="image" src="pictures/web_server_demo.png">
+
 ## Code Structure
 
 ### notebooks

@@ -1,31 +1,21 @@
-# Use the official Debian-hosted Python image
-FROM python:3.9-slim-buster
+# ENV
+FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+RUN apt-get update && apt-get install -y git wget jq
 
-# Tell pipenv where the shell is.
-# This allows us to use "pipenv shell" as a container entry point.
-ENV PYENV_SHELL=/bin/bash
-
-# Ensure we have an up to date baseline, install dependencies
-RUN set -ex; \
-    apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends build-essential git && \
-    pip install --no-cache-dir --upgrade pip && \
-    pip install pipenv && \
-    mkdir -p /app
-
+# APP
 WORKDIR /app
-
-# Add Pipfile, Pipfile.lock
-ADD Pipfile Pipfile.lock /app/
-
-RUN pipenv sync
-
-# Add source code
-ADD . /app
-
-# Entry point
-ENTRYPOINT ["/bin/bash"]
-
-# Get into the pipenv shell
-CMD ["-c", "pipenv shell"]
+RUN \
+  pip install transformers datasets einops gradio peft pyyaml colorama markdown pandas Pillow requests scipy \
+    sentencepiece tqdm torch-grammar bitsandbytes protobuf;
+RUN \
+   git clone https://github.com/cnut1648/text-generation-webui.git && \
+    cd text-generation-webui && \
+     git checkout llavav1.5-7b;
+WORKDIR /app/text-generation-webui
+RUN \
+    python download-model.py cnut1648/llava-v1.5-7b;
+RUN \
+   cd models/cnut1648_llava-v1.5-7b && \
+    jq '.model_type |= if . == "llava" then "llama" else . end' config.json > tmp.json && mv tmp.json config.json
+EXPOSE 7860 5000 5005
+CMD ["python", "server.py", "--model", "cnut1648_llava-v1.5-7b", "--multimodal-pipeline", "llava-v1.5-7b", "--load-in-4bit", "--listen", "--listen-host", "0.0.0.0"]
