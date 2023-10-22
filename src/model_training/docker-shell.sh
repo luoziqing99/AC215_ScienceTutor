@@ -7,7 +7,7 @@ set -e
 export IMAGE_NAME="model_training"
 export BASE_DIR=$(pwd)
 export SECRETS_DIR=$(pwd)/../../../secrets/
-export GCS_BUCKET_URI="gs://ac215-sciencetutor-trainer"
+export GCS_BUCKET_URI="gs://ac215-sciencetutor-trainer2"
 export GCP_PROJECT="ac215project-398401"
 export WANDB_API_KEY=$(cat $(pwd)/../../../secrets/wandb.txt)
 
