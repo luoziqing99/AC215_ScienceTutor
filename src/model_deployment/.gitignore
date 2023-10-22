@@ -1,0 +1,6 @@
+# misc
+.DS_Store
+/docker-volumes
+trainer.tar.gz
+/artifacts
+/wandb
