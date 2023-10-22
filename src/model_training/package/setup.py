@@ -3,19 +3,21 @@ from setuptools import setup
 
 
 REQUIRED_PACKAGES = [
-    "flash_attn",
+    "wandb",
+    "huggingface_hub",
     "transformers",
     "datasets",
     "evaluate",
-    "fire",
-    "deepspeed",
-    "accelerate"
+    # "fire",
+    # "flash_attn",
+    # "deepspeed",
+    # "accelerate"
 ]
 
 setup(
     name="ac215-sciencetutor-trainer",
     version="0.0.1",
-    # install_requires=REQUIRED_PACKAGES,
+    install_requires=REQUIRED_PACKAGES,
     packages=find_packages(),
     description="ScienceTutor Trainer Application",
 )

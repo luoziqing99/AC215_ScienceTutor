@@ -23,5 +23,14 @@ def wandb_apikey() -> str:
     # Download the file
     download_blob(BUCKET_NAME, SOURCE_BLOB_NAME, DESTINATION_FILE_NAME)
     # Read the downloaded file
-    file_content = read_file(DESTINATION_FILE_NAME)
+    file_content = read_file(DESTINATION_FILE_NAME).strip()
+    return file_content
+
+def get_apikey(type) -> str:
+    # Download the file
+    src_name = f'{type}_api.txt'
+    dest_name = f'./{type}_api.txt'
+    download_blob(BUCKET_NAME, src_name, dest_name)
+    # Read the downloaded file
+    file_content = read_file(dest_name).strip()
     return file_content

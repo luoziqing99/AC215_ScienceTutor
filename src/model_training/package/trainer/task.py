@@ -1,10 +1,13 @@
 import subprocess
 import os
-from .wandb_api import wandb_apikey
+from .wandb_api import get_apikey
 from .upload_model_to_gcs import upload_model_checkpoint
+import wandb, huggingface_hub
 
 # Get wandb key from gcs
-wandb_key = wandb_apikey()
+# wandb_key = wandb_apikey("wandb")
+wandb.login(key = get_apikey("wandb"))
+huggingface_hub.login(token = get_apikey("huggingface"))
 
 # Name the model checkpoint
 checkpoint_name = "llava-vicuna-7b-v1.3-pretrain-ScienceQA_QCM_LEA-vertex"
@@ -21,10 +24,9 @@ cd checkpoints
 wget "https://huggingface.co/liuhaotian/llava-pretrain-vicuna-7b-v1.3/resolve/main/mm_projector.bin"
 cd ..
 
-# Weights and Biases
-wandb login "{wandb_key}"
-
 pip list
+# brew install git-lfs
+# git lfs install
 
 deepspeed llava/train/train_mem.py \
     --deepspeed ./scripts/zero3_offload.json \
@@ -56,7 +58,8 @@ deepspeed llava/train/train_mem.py \
     --gradient_checkpointing True \
     --dataloader_num_workers 4 \
     --lazy_preprocess True \
-    --report_to wandb
+    --report_to wandb 
+    # --push_to_hub True
 """
 
 with open(os.path.join(os.getcwd(), "task-shell.sh"), "w") as f:
@@ -78,4 +81,4 @@ else:
     print(f"Shell script failed with return code {process.returncode}")
 
 # Upload model checkpoint to gcs
-upload_model_checkpoint(checkpoint_name)
+# upload_model_checkpoint(checkpoint_name)
