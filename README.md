@@ -107,6 +107,30 @@ Google Cloud Storage Bucket with our training code stored in `trainer.tar.gz`:
 Vertex AI showing our attempts for model training (currently we are still restricted by Vertex AI's GPU quota and cannot load our model into memory):
 <img width="1362" alt="image" src="pictures/vertex_ai_model_training.png">
 
+## Dataset Evaluation
+
+We have trained the model on ScienceQA, and to evaluate our model performance on science domain, we provice code to evalaute on the testset of ScienceQA, which contains 4241 instances.
+
+```shell
+cd src/model_inference;
+git clone https://github.com/cnut1648/LLaVA.git # our forked repo
+
+# this will cache inference results in `src/model_inference/scienceqa-eval.jsonl`
+PYTHONPATH=LLaVA python -m model_vqa_science \
+    --model-path <your llava model> \
+    --single-pred-prompt \
+    --temperature 0 \
+    --conv-mode vicuna_v1
+
+python compute_metric.py
+```
+Our code supports multi-GPU inference, simply set your `CUDA_VISIBLE_DEVICES` environment variable to the GPUs you want to use. For example, to use GPU 0 and 1, run `CUDA_VISIBLE_DEVICES=0,1 python -m model_vqa_science ...`.
+
+For our 7B model, the performance is
+```
+Total: 4241, Correct: 2779, Accuracy: 65.53%, IMG-Accuracy: 63.86%
+```
+which is pretty close to the performance reported by the LLaVA 13B (~70%). Note that that is a larger model with a possibly more careful hyperparameter tuning while we only train for one epoch with a default hyperparameter.
 
 ## Code Structure
 
@@ -227,3 +251,4 @@ In this milestone, it is a placeholder for future implementation.
 #### (5) Other Containers
 In addition to the existing containers, we may consider incorporating additional containers as the need arises. 
 This may include a database container for the storage of user message data, and a recommendation engine container housing the logic for recommending posts or videos based on the questions user asked.
+

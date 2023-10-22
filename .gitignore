@@ -136,3 +136,5 @@ src/data_processing/*.json
 
 # DS_Store files
 *.DS_Store
+.vscode
+scienceqa-*.json*
