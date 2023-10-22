@@ -17,13 +17,14 @@ import numpy as np
 import base64
 from google.cloud import storage
 from google.cloud import aiplatform
+import tensorflow as tf
 
 # # W&B
 # import wandb
 
 GCP_PROJECT = os.environ["GCP_PROJECT"]
 GCS_MODELS_BUCKET_NAME = os.environ["GCS_MODELS_BUCKET_NAME"]
-BEST_MODEL = "model-llava-v1.5-7b"
+BEST_MODEL = "model-mobilenetv2_train_base_True.v74"
 ARTIFACT_URI = f"gs://{GCS_MODELS_BUCKET_NAME}/{BEST_MODEL}"
 
 data_details = {
@@ -35,6 +36,27 @@ data_details = {
     "label2index": {"oyster": 0, "crimini": 1, "amanita": 2},
     "index2label": {0: "oyster", 1: "crimini", 2: "amanita"},
 }
+
+
+def download_file(packet_url, base_path="", extract=False, headers=None):
+    if base_path != "":
+        if not os.path.exists(base_path):
+            os.mkdir(base_path)
+    packet_file = os.path.basename(packet_url)
+    with requests.get(packet_url, stream=True, headers=headers) as r:
+        r.raise_for_status()
+        with open(os.path.join(base_path, packet_file), "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+
+    if extract:
+        if packet_file.endswith(".zip"):
+            with zipfile.ZipFile(os.path.join(base_path, packet_file)) as zfile:
+                zfile.extractall(base_path)
+        else:
+            packet_name = packet_file.split(".")[0]
+            with tarfile.open(os.path.join(base_path, packet_file)) as tfile:
+                tfile.extractall(base_path)
 
 
 def main(args=None):
@@ -111,7 +133,7 @@ def main(args=None):
         # List of prebuilt containers for prediction
         # https://cloud.google.com/vertex-ai/docs/predictions/pre-built-containers
         serving_container_image_uri = (
-            "us-docker.pkg.dev/vertex-ai/prediction/pytorch-gpu.2-0:latest"
+            "us-docker.pkg.dev/vertex-ai/prediction/tf2-cpu.2-12:latest"
         )
 
         # Upload and Deploy model to Vertex AI
@@ -127,8 +149,7 @@ def main(args=None):
             deployed_model_display_name=BEST_MODEL,
             traffic_split={"0": 100},
             machine_type="n1-standard-4",
-            accelerator_type="NVIDIA_TESLA_V100",
-            accelerator_count=4,
+            accelerator_count=0,
             min_replica_count=1,
             max_replica_count=1,
             sync=False,
@@ -138,36 +159,36 @@ def main(args=None):
     elif args.predict:
         print("Predict using endpoint")
 
-        # # Get the endpoint
-        # # Endpoint format: endpoint_name="projects/{PROJECT_NUMBER}/locations/us-central1/endpoints/{ENDPOINT_ID}"
-        # endpoint = aiplatform.Endpoint(
-        #     "projects/129349313346/locations/us-central1/endpoints/5072058134046965760"
-        # )
+        # Get the endpoint
+        # Endpoint format: endpoint_name="projects/{PROJECT_NUMBER}/locations/us-central1/endpoints/{ENDPOINT_ID}"
+        endpoint = aiplatform.Endpoint(
+            "projects/129349313346/locations/us-central1/endpoints/5072058134046965760"
+        )
 
-        # # Get a sample image to predict
-        # image_files = glob(os.path.join("data", "*.jpg"))
-        # print("image_files:", image_files[:5])
+        # Get a sample image to predict
+        image_files = glob(os.path.join("data", "*.jpg"))
+        print("image_files:", image_files[:5])
 
-        # image_samples = np.random.randint(0, high=len(image_files) - 1, size=5)
-        # for img_idx in image_samples:
-        #     print("Image:", image_files[img_idx])
+        image_samples = np.random.randint(0, high=len(image_files) - 1, size=5)
+        for img_idx in image_samples:
+            print("Image:", image_files[img_idx])
 
-        #     with open(image_files[img_idx], "rb") as f:
-        #         data = f.read()
-        #     b64str = base64.b64encode(data).decode("utf-8")
-        #     # The format of each instance should conform to the deployed model's prediction input schema.
-        #     instances = [{"bytes_inputs": {"b64": b64str}}]
+            with open(image_files[img_idx], "rb") as f:
+                data = f.read()
+            b64str = base64.b64encode(data).decode("utf-8")
+            # The format of each instance should conform to the deployed model's prediction input schema.
+            instances = [{"bytes_inputs": {"b64": b64str}}]
 
-        #     result = endpoint.predict(instances=instances)
+            result = endpoint.predict(instances=instances)
 
-        #     print("Result:", result)
-        #     prediction = result.predictions[0]
-        #     print(prediction, prediction.index(max(prediction)))
-        #     print(
-        #         "Label:   ",
-        #         data_details["index2label"][prediction.index(max(prediction))],
-        #         "\n",
-        #     )
+            print("Result:", result)
+            prediction = result.predictions[0]
+            print(prediction, prediction.index(max(prediction)))
+            print(
+                "Label:   ",
+                data_details["index2label"][prediction.index(max(prediction))],
+                "\n",
+            )
 
 
 if __name__ == "__main__":
@@ -192,6 +213,12 @@ if __name__ == "__main__":
         "--predict",
         action="store_true",
         help="Make prediction using the endpoint from Vertex AI",
+    )
+    parser.add_argument(
+        "-t",
+        "--test",
+        action="store_true",
+        help="Test deployment to Vertex AI",
     )
 
     args = parser.parse_args()
