@@ -15,7 +15,7 @@ def upload_blob(bucket_name, source_folder_path, destination_folder_gcs):
             print(f'File {local_file_path} uploaded to {blob_destination_path}.')
 
 # Usage:
-bucket_name = "ac215-sciencetutor-trainer"
+bucket_name = "ac215-sciencetutor-trainer2"
 source_folder_path = './checkpoints'
 destination_folder_gcs = 'checkpoints'
 

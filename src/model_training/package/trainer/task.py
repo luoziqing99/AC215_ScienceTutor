@@ -1,8 +1,13 @@
 import subprocess
 import os
-from .wandb_api import get_apikey
+from .api_key import get_apikey
 from .upload_model_to_gcs import upload_model_checkpoint
 import wandb, huggingface_hub
+
+# Current wording directory
+cwd = os.getcwd()
+print("Current path is", cwd)
+print(os.listdir(cwd))
 
 # Get wandb key from gcs
 # wandb_key = wandb_apikey("wandb")
@@ -80,5 +85,9 @@ if process.returncode == 0:
 else:
     print(f"Shell script failed with return code {process.returncode}")
 
+# Current wording directory
+cwd = os.getcwd()
+print("Current path is", cwd)
+print(os.listdir(cwd))
 # Upload model checkpoint to gcs
 # upload_model_checkpoint(checkpoint_name)
