@@ -1,7 +1,7 @@
 from google.cloud import storage
 storage_client = storage.Client()
 
-bucket_name = "ac215-sciencetutor-trainer"
+bucket_name = "ac215-sciencetutor-trainer2"
 filepath = "trainer.tar.gz"
 bucket = storage_client.bucket(bucket_name)
 blob = bucket.blob(filepath)

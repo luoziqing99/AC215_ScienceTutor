@@ -13,7 +13,7 @@ REQUIRED_PACKAGES = [
 ]
 
 setup(
-    name="ac215-sciencetutor-trainer",
+    name="ac215-sciencetutor-trainer2",
     version="0.0.1",
     # install_requires=REQUIRED_PACKAGES,
     packages=find_packages(),
