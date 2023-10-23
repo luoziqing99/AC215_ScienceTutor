@@ -12,7 +12,7 @@ import string
 from kfp import dsl
 from kfp import compiler
 import google.cloud.aiplatform as aip
-from model import model_training #, model_deploy
+from model import model_training
 
 
 GCP_PROJECT = os.environ["GCP_PROJECT"]
@@ -23,10 +23,10 @@ GCS_SERVICE_ACCOUNT = os.environ["GCS_SERVICE_ACCOUNT"]
 GCS_PACKAGE_URI = os.environ["GCS_PACKAGE_URI"]
 GCP_REGION = os.environ["GCP_REGION"]
 
-# DATA_COLLECTOR_IMAGE = "gcr.io/ac215-project/mushroom-app-data-collector"
-# DATA_COLLECTOR_IMAGE = "dlops/mushroom-app-data-collector"
 DATA_PROCESSOR_IMAGE = "jenniferz99/data_processing"
-
+MODEL_DEPLOY_IMAGE = "us-central1-docker.pkg.dev/ac215project-398401/sciencetutor-docker-repo/model_deploy"
+SELECTOR_CONSTRAINT = "NVIDIA_TESLA_V100"
+GPU_LIMIT = 2
 
 def generate_uuid(length: int = 8) -> str:
     return "".join(random.choices(string.ascii_lowercase + string.digits, k=length))
@@ -104,34 +104,45 @@ def main(args=None):
 
         job.run(service_account=GCS_SERVICE_ACCOUNT)
 
-    # if args.model_deploy:
-    #     print("Model Deploy")
+    if args.model_deploy:
+        print("Model Deploy")
 
-    #     # Define a Pipeline
-    #     @dsl.pipeline
-    #     def model_deploy_pipeline():
-    #         model_deploy(
-    #             bucket_name=GCS_BUCKET_NAME,
-    #         )
+        # Define a Container Component for data processing
+        @dsl.container_component
+        def model_deploy():
+            container_spec = dsl.ContainerSpec(
+                image=MODEL_DEPLOY_IMAGE,
+                # command=[""],
+                # args=[""],
+            )
 
-    #     # Build yaml file for pipeline
-    #     compiler.Compiler().compile(
-    #         model_deploy_pipeline, package_path="model_deploy.yaml"
-    #     )
+            return container_spec
 
-    #     # Submit job to Vertex AI
-    #     aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
+        # Define a Pipeline
+        @dsl.pipeline
+        def model_deploy_pipeline():
+            if __name__ == '__main__':
+                model_deploy().set_accelerator_type(accelerator=SELECTOR_CONSTRAINT).set_accelerator_limit(2).\
+                    set_cpu_limit('16').set_memory_limit('64G')
 
-    #     job_id = generate_uuid()
-    #     DISPLAY_NAME = "mushroom-app-model-deploy-" + job_id
-    #     job = aip.PipelineJob(
-    #         display_name=DISPLAY_NAME,
-    #         template_path="model_deploy.yaml",
-    #         pipeline_root=PIPELINE_ROOT,
-    #         enable_caching=False,
-    #     )
+        # Build yaml file for pipeline
+        compiler.Compiler().compile(
+            model_deploy_pipeline, package_path="model_deploy.yaml"
+        )
 
-    #     job.run(service_account=GCS_SERVICE_ACCOUNT)
+        # Submit job to Vertex AI
+        aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
+
+        job_id = generate_uuid()
+        DISPLAY_NAME = "sciencetutor-app-model-deploy-" + job_id
+        job = aip.PipelineJob(
+            display_name=DISPLAY_NAME,
+            template_path="model_deploy.yaml",
+            pipeline_root=PIPELINE_ROOT,
+            enable_caching=False,
+        )
+
+        job.run(service_account=GCS_SERVICE_ACCOUNT)
 
     if args.pipeline:
 
