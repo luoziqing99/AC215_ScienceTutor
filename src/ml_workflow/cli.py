@@ -154,20 +154,16 @@ def main(args=None):
                 .set_display_name("Data Processor")
             )
             # Model Training
-            # model_training_task = (
-            #     model_training(
-            #         project=GCP_PROJECT,
-            #         location=GCP_REGION,
-            #         staging_bucket=GCS_PACKAGE_URI,
-            #         bucket_name=GCS_BUCKET_NAME,
-            #         epochs=15,
-            #         batch_size=16,
-            #         model_name="llava-sqa",
-            #         train_base=False,
-            #     )
-            #     .set_display_name("Model Training")
-            #     .after(data_processor_task)
-            # )
+            model_training_task = (
+                model_training(
+                    project=GCP_PROJECT,
+                    location=GCP_REGION,
+                    staging_bucket=GCS_PACKAGE_URI,
+                    bucket_name=GCS_BUCKET_NAME,
+                )
+                .set_display_name("Model Training")
+                .after(data_processor_task)
+            )
             # Model Deployment
             # model_deploy_task = (
             #     model_deploy(
