@@ -12,7 +12,7 @@ import string
 from kfp import dsl
 from kfp import compiler
 import google.cloud.aiplatform as aip
-from model import model_training #, model_deploy
+from model import model_training, model_deploy
 
 
 GCP_PROJECT = os.environ["GCP_PROJECT"]
@@ -26,7 +26,7 @@ GCP_REGION = os.environ["GCP_REGION"]
 # DATA_COLLECTOR_IMAGE = "gcr.io/ac215-project/mushroom-app-data-collector"
 # DATA_COLLECTOR_IMAGE = "dlops/mushroom-app-data-collector"
 DATA_PROCESSOR_IMAGE = "jenniferz99/data_processing"
-MODEL_DEPLOY_IMAGE = "13052423200/scienceqa_llava"
+# MODEL_DEPLOY_IMAGE = "13052423200/scienceqa_llava"
 
 
 def generate_uuid(length: int = 8) -> str:
@@ -109,19 +109,21 @@ def main(args=None):
         print("Model Deploy")
 
         # Define a Container Component for model deploy
-        @dsl.container_component
-        def model_deploy():
-            container_spec = dsl.ContainerSpec(
-                image=MODEL_DEPLOY_IMAGE,
-                # command=[],
-                # args=[],
-            )
-            return container_spec
+        # @dsl.container_component
+        # def model_deploy():
+        #     container_spec = dsl.ContainerSpec(
+        #         image=MODEL_DEPLOY_IMAGE,
+        #         # command=[],
+        #         # args=[],
+        #     )
+        #     return container_spec
         
         # Define a Pipeline
         @dsl.pipeline
         def model_deploy_pipeline():
-            model_deploy()
+            model_deploy(
+                bucket_name=GCS_BUCKET_NAME,
+            )
 
         # Build yaml file for pipeline
         compiler.Compiler().compile(
@@ -153,16 +155,6 @@ def main(args=None):
                 # args=[],
             )
             return container_spec
-        
-        # Define a Container Component for model deploy
-        @dsl.container_component
-        def model_deploy():
-            container_spec = dsl.ContainerSpec(
-                image=MODEL_DEPLOY_IMAGE,
-                # command=[],
-                # args=[],
-            )
-            return container_spec
 
         # Define a Pipeline
         @dsl.pipeline
@@ -185,7 +177,7 @@ def main(args=None):
             )
             # Model Deployment
             model_deploy_task = (
-                model_deploy()
+                model_deploy(bucket_name=GCS_BUCKET_NAME)
                 .set_display_name("Model Deploy")
                 .after(model_training_task)
             )
