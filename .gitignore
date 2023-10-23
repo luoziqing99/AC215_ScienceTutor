@@ -138,3 +138,5 @@ src/data_processing/*.json
 *.DS_Store
 .vscode
 scienceqa-*.json*
+
+**/text-generation-webui

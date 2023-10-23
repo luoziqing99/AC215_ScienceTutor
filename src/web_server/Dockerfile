@@ -18,4 +18,4 @@ RUN \
    cd models/cnut1648_llava-v1.5-7b && \
     jq '.model_type |= if . == "llava" then "llama" else . end' config.json > tmp.json && mv tmp.json config.json
 EXPOSE 7860 5000 5005
-CMD ["python", "server.py", "--model", "cnut1648_llava-v1.5-7b", "--multimodal-pipeline", "llava-v1.5-7b", "--load-in-4bit", "--listen", "--listen-host", "0.0.0.0"]
+CMD ["python", "server.py", "--model", "cnut1648_llava-v1.5-7b", "--multimodal-pipeline", "llava-v1.5-7b", "--load-in-4bit", "--listen", "--listen-host", "0.0.0.0", "--api"]
