@@ -26,6 +26,7 @@ GCP_REGION = os.environ["GCP_REGION"]
 # DATA_COLLECTOR_IMAGE = "gcr.io/ac215-project/mushroom-app-data-collector"
 # DATA_COLLECTOR_IMAGE = "dlops/mushroom-app-data-collector"
 DATA_PROCESSOR_IMAGE = "jenniferz99/data_processing"
+MODEL_DEPLOY_IMAGE = "13052423200/scienceqa_llava"
 
 
 def generate_uuid(length: int = 8) -> str:
@@ -104,34 +105,42 @@ def main(args=None):
 
         job.run(service_account=GCS_SERVICE_ACCOUNT)
 
-    # if args.model_deploy:
-    #     print("Model Deploy")
+    if args.model_deploy:
+        print("Model Deploy")
 
-    #     # Define a Pipeline
-    #     @dsl.pipeline
-    #     def model_deploy_pipeline():
-    #         model_deploy(
-    #             bucket_name=GCS_BUCKET_NAME,
-    #         )
+        # Define a Container Component for model deploy
+        @dsl.container_component
+        def model_deploy():
+            container_spec = dsl.ContainerSpec(
+                image=MODEL_DEPLOY_IMAGE,
+                # command=[],
+                # args=[],
+            )
+            return container_spec
+        
+        # Define a Pipeline
+        @dsl.pipeline
+        def model_deploy_pipeline():
+            model_deploy()
 
-    #     # Build yaml file for pipeline
-    #     compiler.Compiler().compile(
-    #         model_deploy_pipeline, package_path="model_deploy.yaml"
-    #     )
+        # Build yaml file for pipeline
+        compiler.Compiler().compile(
+            model_deploy_pipeline, package_path="model_deploy.yaml"
+        )
 
-    #     # Submit job to Vertex AI
-    #     aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
+        # Submit job to Vertex AI
+        aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
 
-    #     job_id = generate_uuid()
-    #     DISPLAY_NAME = "mushroom-app-model-deploy-" + job_id
-    #     job = aip.PipelineJob(
-    #         display_name=DISPLAY_NAME,
-    #         template_path="model_deploy.yaml",
-    #         pipeline_root=PIPELINE_ROOT,
-    #         enable_caching=False,
-    #     )
+        job_id = generate_uuid()
+        DISPLAY_NAME = "sciencetutor-app-model-deploy-" + job_id
+        job = aip.PipelineJob(
+            display_name=DISPLAY_NAME,
+            template_path="model_deploy.yaml",
+            pipeline_root=PIPELINE_ROOT,
+            enable_caching=False,
+        )
 
-    #     job.run(service_account=GCS_SERVICE_ACCOUNT)
+        job.run(service_account=GCS_SERVICE_ACCOUNT)
 
     if args.pipeline:
 
@@ -140,6 +149,16 @@ def main(args=None):
         def data_processor():
             container_spec = dsl.ContainerSpec(
                 image=DATA_PROCESSOR_IMAGE,
+                # command=[],
+                # args=[],
+            )
+            return container_spec
+        
+        # Define a Container Component for model deploy
+        @dsl.container_component
+        def model_deploy():
+            container_spec = dsl.ContainerSpec(
+                image=MODEL_DEPLOY_IMAGE,
                 # command=[],
                 # args=[],
             )
@@ -165,13 +184,11 @@ def main(args=None):
                 .after(data_processor_task)
             )
             # Model Deployment
-            # model_deploy_task = (
-            #     model_deploy(
-            #         bucket_name=GCS_BUCKET_NAME,
-            #     )
-            #     .set_display_name("Model Deploy")
-            #     .after(model_training_task)
-            # )
+            model_deploy_task = (
+                model_deploy()
+                .set_display_name("Model Deploy")
+                .after(model_training_task)
+            )
 
         # Build yaml file for pipeline
         compiler.Compiler().compile(ml_pipeline, package_path="pipeline.yaml")
