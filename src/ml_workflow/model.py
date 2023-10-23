@@ -68,6 +68,8 @@ def model_training(
     base_image="python:3.10", packages_to_install=["google-cloud-aiplatform"]
 )
 def model_deploy(
+    project: str = "",
+    location: str = "",
     bucket_name: str = "",
 ):
     print("Model Training Job")
@@ -76,11 +78,16 @@ def model_deploy(
 
     # List of prebuilt containers for prediction
     # https://cloud.google.com/vertex-ai/docs/predictions/pre-built-containers
+    # https://cloud.google.com/vertex-ai/docs/predictions/use-custom-container#aiplatform_upload_model_highlight_container-python_vertex_ai_sdk
+    display_name = "ScienceTutor App Model"    
     serving_container_image_uri = ("13052423200/scienceqa_llava")
-    serving_container_ports = (7860, 5000, 5005)
+    # serving_container_ports = (7860, 5000, 5005)
+    serving_container_ports = (7860)
 
-    display_name = "ScienceTutor App Model"
     # ARTIFACT_URI = f"gs://{bucket_name}/model"
+
+    # Initialize Vertex AI SDK for Python
+    aip.init(project=project, location=location)
 
     # Upload and Deploy model to Vertex AI
     # Reference: https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.aiplatform.Model#google_cloud_aiplatform_Model_upload

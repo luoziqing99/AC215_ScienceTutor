@@ -122,6 +122,8 @@ def main(args=None):
         @dsl.pipeline
         def model_deploy_pipeline():
             model_deploy(
+                project=GCP_PROJECT,
+                location=GCP_REGION,
                 bucket_name=GCS_BUCKET_NAME,
             )
 
@@ -177,7 +179,11 @@ def main(args=None):
             )
             # Model Deployment
             model_deploy_task = (
-                model_deploy(bucket_name=GCS_BUCKET_NAME)
+                model_deploy(
+                    project=GCP_PROJECT,
+                    location=GCP_REGION,
+                    bucket_name=GCS_BUCKET_NAME,
+                )
                 .set_display_name("Model Deploy")
                 .after(model_training_task)
             )
