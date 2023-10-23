@@ -88,7 +88,7 @@ def model_deploy(
         display_name=display_name,
         # artifact_uri=ARTIFACT_URI,
         serving_container_image_uri=serving_container_image_uri,
-        serving_container_ports=serving_container_ports，
+        serving_container_ports=serving_container_ports,
     )
 
     DEPLOY_COMPUTE = "n1-standard-16"
@@ -102,7 +102,7 @@ def model_deploy(
         traffic_split={"0": 100},
         machine_type=DEPLOY_COMPUTE,
         accelerator_count=DEPLOY_NGPU,
-        accelerator_type=DEPLOY_GP
+        accelerator_type=DEPLOY_GPU,
         min_replica_count=1,
         max_replica_count=1,
         sync=True,
