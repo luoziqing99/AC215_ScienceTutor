@@ -67,3 +67,4 @@ if __name__ == "__main__":
         formatted_dataset[split] = convert_to_llava(split)
     formatted_dataset = datasets.DatasetDict(formatted_dataset)
     formatted_dataset.save_to_disk("ScienceQA-LLAVA")
+    print("processing completed")
