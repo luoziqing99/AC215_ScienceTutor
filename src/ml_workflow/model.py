@@ -80,9 +80,12 @@ def model_deploy(
     # https://cloud.google.com/vertex-ai/docs/predictions/pre-built-containers
     # https://cloud.google.com/vertex-ai/docs/predictions/use-custom-container#aiplatform_upload_model_highlight_container-python_vertex_ai_sdk
     display_name = "ScienceTutor App Model"    
-    serving_container_image_uri = ("13052423200/scienceqa_llava")
-    # serving_container_ports = (7860, 5000, 5005)
-    serving_container_ports = (7860)
+    serving_container_image_uri = (
+        "us-central1-docker.pkg.dev/ac215project-398401/sciencetutor-docker-repo/model_deploy"
+    )
+
+    serving_container_ports = [7860, 5000, 5005]
+    # serving_container_ports = [7860]
 
     # ARTIFACT_URI = f"gs://{bucket_name}/model"
 

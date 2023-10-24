@@ -27,6 +27,7 @@ GCP_REGION = os.environ["GCP_REGION"]
 # DATA_COLLECTOR_IMAGE = "dlops/mushroom-app-data-collector"
 DATA_PROCESSOR_IMAGE = "jenniferz99/data_processing"
 # MODEL_DEPLOY_IMAGE = "13052423200/scienceqa_llava"
+MODEL_DEPLOY_IMAGE = "us-central1-docker.pkg.dev/ac215project-398401/sciencetutor-docker-repo/model_deploy"
 
 
 def generate_uuid(length: int = 8) -> str:
