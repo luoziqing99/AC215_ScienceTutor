@@ -101,7 +101,7 @@ def model_deploy(
         serving_container_ports=serving_container_ports,
     )
 
-    DEPLOY_COMPUTE = "n1-standard-16"
+    DEPLOY_COMPUTE = "n1-standard-8"
     DEPLOY_GPU = "NVIDIA_TESLA_V100"
     DEPLOY_NGPU = 1
 
