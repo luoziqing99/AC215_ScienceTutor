@@ -152,6 +152,33 @@ docker run --gpus all -p 7860:7860 -t ui
 An example conversation with our model is shown below:
 <img width="1362" alt="image" src="pictures/web_server_demo.png">
 
+For online deployment, we have attempted to deploy our model on Vertex AI Endpoint, via the script in [`src/src/web_server/failed_vertex_ai_script.py`](src/web_server/failed_vertex_ai_script.py).
+However we are advised by Shivas that Vertex AI is not suitable for our use case, because Vertex AI takes only a model and build the API endpoint for you while we have our own service and API, like a web server.
+We are then suggested to try compute engine or cloud run. However there is no GPU support for cloud run, so as a workaround, we use compute engine instead.
+
+In this project we deploy our model, as well as the Web UI on Google compute engine, where instance starts from our customized docker:
+<img width="1362" alt="image" src="pictures/compute_engine.png">
+As we quantized our model, we have successfully reduced the memory usage and are able to deployed our model on a T4 GPU with n1-highmem-2 instance.
+Note that there is an external IP assigned, so that user can directly go to `http://34.125.115.138:7860/` to access our service.
+We have stopped the instance to save cost as keeping it running all day would quickly exhaust our credits. Please contact us if you want to try it out, and we will start the instance for you.
+
+Alternatively, our docker also supports handling direct requests. For example, you can create a `req.json` like this (checkout [`src/web_server/api_example/req.json`](src/web_server/api_example/req.json)):
+```json
+{
+    "prompt": "Put an elephant in a fridge in three steps:\n1)",
+    "seed": 2
+}
+```
+And then ask the model to complete the three steps to put an elephant in a fridge:
+```shell
+curl -X POST -d "@req.json" -H "Content-Type: application/json" http://34.125.115.138:5000/api/v1/generate
+# an example model output
+# {"results": [{"text": " Open the refrigerator door.\n2) Place the elephant inside the refrigerator.\n3) Close the refrigerator door."}]}
+```
+
+Or, if user prefer streaming API via websocket, you can use the python code in [`src/web_server/api_example/websocket_streaming.py`](src/web_server/api_example/websocket_streaming.py) to interact with our model.
+The output will be generated in a stream, similar to ChatGPT interface.
+
 ## Code Structure
 
 ### notebooks
