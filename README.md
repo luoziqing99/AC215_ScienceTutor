@@ -5,7 +5,7 @@
 <img width="1362" alt="image" src="pictures/science_tutor_app_pipeline2.png">
 
 ## Vertex AI Pipeline for ML Workflow
-<img width="1362" alt="image" src="pictures/ml_workflow.png">
+<img width="800" alt="image" src="pictures/ml_workflow.png">
 
 ## Project Organization
       .
