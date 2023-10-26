@@ -1,7 +1,6 @@
 # AC215 - ScienceTutor
 
 ## Application Pipeline Flow
-
 <img width="1362" alt="image" src="pictures/science_tutor_app_pipeline2.png">
 
 ## Vertex AI Pipeline for ML Workflow
@@ -135,8 +134,8 @@ Total: 4241, Correct: 2779, Accuracy: 65.53%, IMG-Accuracy: 63.86%
 ```
 which is pretty close to the performance reported by the LLaVA 13B (~70%). Note that that is a larger model with a possibly more careful hyperparameter tuning while we only train for one epoch with a default hyperparameter.
 
-## Web Server (aka Model Deployment)
-We have deployed our model such that user can interact with our model through a web interface. In `web_server/` directory, you can build the `Dockerfile`.
+## Model Deploy
+We have deployed our model such that user can interact with our model through a web interface. In `model_deploy/` directory, you can build the `Dockerfile`.
 We have configurated the UI such that
 - It supports multi-GPU inference. It will dynamically allocate GPUs memory available to your system.   
 - It loads the 4bit quantized model to further reduce the memory usage.
@@ -155,7 +154,7 @@ docker run --gpus all -p 7860:7860 -t ui
 An example conversation with our model is shown below:
 <img width="1362" alt="image" src="pictures/web_server_demo.png">
 
-For online deployment, we have attempted to deploy our model on Vertex AI Endpoint, via the script in [`src/src/web_server/failed_vertex_ai_script.py`](src/web_server/failed_vertex_ai_script.py).
+For online deployment, we have attempted to deploy our model on Vertex AI Endpoint, via the script in [`src/src/model_deploy/failed_vertex_ai_script.py`](src/model_deploy/failed_vertex_ai_script.py).
 However we are advised by Shivas that Vertex AI is not suitable for our use case, because Vertex AI takes only a model and build the API endpoint for you while we have our own service and API, like a web server.
 We are then suggested to try compute engine or cloud run. However there is no GPU support for cloud run, so as a workaround, we use compute engine instead.
 
@@ -165,7 +164,7 @@ As we quantized our model, we have successfully reduced the memory usage and are
 Note that there is an external IP assigned, so that user can directly go to `http://34.125.115.138:7860/` to access our service.
 We have stopped the instance to save cost as keeping it running all day would quickly exhaust our credits. Please contact us if you want to try it out, and we will start the instance for you.
 
-Alternatively, our docker also supports handling direct requests. For example, you can create a `req.json` like this (checkout [`src/web_server/api_example/req.json`](src/web_server/api_example/req.json)):
+Alternatively, our docker also supports handling direct requests. For example, you can create a `req.json` like this (checkout [`src/model_deploy/api_example/req.json`](src/model_deploy/api_example/req.json)):
 ```json
 {
     "prompt": "Put an elephant in a fridge in three steps:\n1)",
@@ -179,7 +178,7 @@ curl -X POST -d "@req.json" -H "Content-Type: application/json" http://34.125.11
 # {"results": [{"text": " Open the refrigerator door.\n2) Place the elephant inside the refrigerator.\n3) Close the refrigerator door."}]}
 ```
 
-Or, if user prefer streaming API via websocket, you can use the python code in [`src/web_server/api_example/websocket_streaming.py`](src/web_server/api_example/websocket_streaming.py) to interact with our model.
+Or, if user prefer streaming API via websocket, you can use the python code in [`src/model_deploy/api_example/websocket_streaming.py`](src/model_deploy/api_example/websocket_streaming.py) to interact with our model.
 The output will be generated in a stream, similar to ChatGPT interface.
 
 ## Code Structure
