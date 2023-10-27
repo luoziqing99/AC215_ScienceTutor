@@ -162,7 +162,7 @@ which is pretty close to the performance reported by the LLaVA 13B (~70%). Note 
 We have deployed our model such that user can interact with our model through a web interface. In `model_deploy/` directory, you can build the `Dockerfile`.
 We have configurated the UI such that
 - It supports multi-GPU inference. It will dynamically allocate GPUs memory available to your system.   
-- It loads the 4bit quantized model to further reduce the memory usage.
+- It loads the **4bit quantized model** to further reduce the memory usage.
 - The model it loaded is our LLaVA 7b model.
 - We export port 7860 for the web server. 
  
