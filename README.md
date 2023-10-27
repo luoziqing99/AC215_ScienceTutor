@@ -16,6 +16,7 @@
       │   ├── compute_engine.png
       │   ├── gcs_model_bucket.png
       │   ├── ml_workflow.png
+      │   ├── ml_workflow_pipeline_run.png
       │   ├── science_tutor_app_pipeline.png
       │   ├── science_tutor_app_pipeline2.png
       │   ├── vertex_ai_model_training.png
@@ -319,6 +320,9 @@ python3 cli.py -w # Run the ScienceTutor App Pipeline (Data Processor and Model 
 The Data Processor component processes the ScienceQA dataset from huggingface and converts the data into LLaVA format for training the LLaVA model. The Model Training component takes the packaged model training code and sends job to Vertex AI to finetune the LLaVA model on the science domain. The Vertex AI Pipeline for ML Workflow is shown below (the Compute Engine component is discussed in the Model Deploy Container section). 
 
 <img width="800" alt="image" src="pictures/ml_workflow.png">
+
+<img width="800" alt="image" src="pictures/ml_workflow_pipeline_run.png">
+
 
 #### (4) Model Deploy Container
 This container contains the code for deploying our Science Tutor chatbot application on GCP Compute Engine. Our custom container also supports handling direct requests via a json file or streaming API via websocket.
