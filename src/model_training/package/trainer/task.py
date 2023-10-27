@@ -19,6 +19,7 @@ checkpoint_name = "llava-vicuna-7b-v1.3-pretrain-ScienceQA_QCM_LEA-vertex"
 
 script = f"""\
 git clone https://github.com/cnut1648/LLaVA
+ls
 pip install transformers datasets evaluate
 pip install ninja
 pip install fire
@@ -27,10 +28,11 @@ pip install -e .
 mkdir checkpoints
 cd checkpoints
 wget "https://huggingface.co/liuhaotian/llava-pretrain-vicuna-7b-v1.3/resolve/main/mm_projector.bin"
+
 cd ..
 
 pip list
-# brew install git-lfs
+# pip install git-lfs
 # git lfs install
 
 deepspeed llava/train/train_mem.py \
@@ -64,10 +66,9 @@ deepspeed llava/train/train_mem.py \
     --dataloader_num_workers 4 \
     --lazy_preprocess True \
     --report_to wandb \
-    --tf32 True \
-    --bf16 True \
-    --bits 4
     # --push_to_hub True
+    # --tf32 True \
+    # --bf16 True
 """
 
 with open(os.path.join(os.getcwd(), "task-shell.sh"), "w") as f:

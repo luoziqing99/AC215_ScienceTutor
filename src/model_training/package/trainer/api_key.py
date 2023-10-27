@@ -14,18 +14,7 @@ def read_file(file_path):
         data = file.read()
     return data
 
-# Set these parameters accordingly
-BUCKET_NAME = 'ac215-sciencetutor-trainer'
-# SOURCE_BLOB_NAME = 'wandb_api.txt'
-# DESTINATION_FILE_NAME = './wandb_api.txt'  # adjust the path accordingly
-
-# def wandb_apikey() -> str:
-#     # Download the file
-#     download_blob(BUCKET_NAME, SOURCE_BLOB_NAME, DESTINATION_FILE_NAME)
-#     # Read the downloaded file
-#     file_content = read_file(DESTINATION_FILE_NAME).strip()
-#     return file_content
-
+BUCKET_NAME = 'ac215-sciencetutor-trainer2'
 def get_apikey(type) -> str:
     # Download the file
     src_name = f'{type}_api.txt'
