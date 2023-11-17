@@ -61,6 +61,7 @@ main {
     white-space: pre-wrap;
     word-wrap: break-word; /* or use overflow-wrap: break-word; */
     overflow-wrap: break-word;
+    color: white;
   }
   
   .message-form input[type="file"] {
@@ -115,20 +116,29 @@ main {
   /* Modify the style for the conversation box */
   .user_msg p, .assistant_msg p  {
     display: flex;
-    align-items: flex-end; /* Align items to the bottom */
+    align-items: center;
     padding: 20px; 
   }
   
-  .user-msg, .assistant-msg {
+ .assistant-msg {
     display: flex;
     align-items: center;
     border-radius: 2px; /* Set the border radius to make it rounded */
     padding: 10px; /* Set padding to add space around the content */
-    margin: 50px 0; /* Set margin to add space between messages */
+    margin: 0; /* Set margin to add space between messages */
+
+  }
+
+  .user-msg {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: 2px; /* Set the border radius to make it rounded */
+    padding: 10px; /* Set padding to add space around the content */
+    margin: 0; /* Set margin to add space between messages */
 
   }
   
-
   .message-content {
     max-width: 70%; /* Adjust the maximum width of the message content */
   }
