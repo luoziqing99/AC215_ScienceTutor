@@ -295,6 +295,14 @@ sh docker-shell.sh
 
 In this milestone, it is a placeholder for future implementation.
 
+#### (5) Flask Backend
+In `src/backend` directory, you can launch the backend server by running `python model_backend.py`. It will start a flask server at `http://localhost:5000/`. It will serve as the backend for our web UI.
+
+Currently there is a `/chat` endpoint with `POST` method. You can check `/apidocs` for Swagger UI API docs.
+
+It is advised to use postman to test the API.
+<img src="pictures/postman.png">
+
 #### (5) Other Containers
 In addition to the existing containers, we may consider incorporating additional containers as the need arises. 
 This may include a database container for the storage of user message data, and a recommendation engine container housing the logic for recommending posts or videos based on the questions user asked.
