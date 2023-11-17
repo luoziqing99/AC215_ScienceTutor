@@ -102,9 +102,9 @@ function App() {
 
   return (
     <div className="app-container">
-      <aside className="sidebar">
-        <h2>Menu</h2>
-      </aside>
+    {/* //   <aside className="sidebar">
+    //     <h2>Menu</h2>
+    //   </aside> */}
 
       <main className="main-container">
         <h1>ScienceTutor</h1>
