@@ -1,13 +1,18 @@
 #!/bin/bash
 
+# exit immediately if a command exits with a non-zero status
 set -e
 
-# build container
-docker buildx build -t ui --platform=linux/amd64 -f Dockerfile .
+# Define some environement variables
+export IMAGE_NAME="chatbot-server"
+export BASE_DIR=$(pwd)
 
-# run container
-docker run --gpus all \
-  -p 7860:7860 \
-  -p 5000:5000 \
-  -p 5005:5005 \
-  -t ui
+# Build the image based on the Dockerfile
+docker build -t $IMAGE_NAME --platform=linux/amd64 -f Dockerfile .
+
+# Run the container
+docker run --rm --name $IMAGE_NAME -ti \
+--mount type=bind,source="$BASE_DIR",target=/app \
+-p 9001:9000 \
+-e HUGGING_FACE_HUB_TOKEN=$HUGGING_FACE_HUB_TOKEN \
+-e DEV=1 $IMAGE_NAME

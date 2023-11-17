@@ -1,102 +1,94 @@
-import os
-import json
-import numpy as np
-import tensorflow as tf
-from tensorflow.python.keras import backend as K
-from tensorflow.keras.models import Model
-import tensorflow_hub as hub
-from google.cloud import aiplatform
-import base64
+from threading import Thread
+from typing import Iterator
+
+# import torch
+from transformers.utils import logging
+from ctransformers import AutoModelForCausalLM
+from transformers import TextIteratorStreamer, AutoTokenizer
 
 
-AUTOTUNE = tf.data.experimental.AUTOTUNE
-local_experiments_path = "/persistent/experiments"
-best_model = None
-best_model_id = None
-prediction_model = None
-data_details = None
-image_width = 224
-image_height = 224
-num_channels = 3
+logging.set_verbosity_info()
+logger = logging.get_logger("transformers")
+
+config = {
+    "max_new_tokens": 256,
+    "repetition_penalty": 1.1,
+    "temperature": 0.1,
+    "stream": True,
+}
+model_id = "TheBloke/Llama-2-7B-Chat-GGML"
+device = "cpu"
 
 
-def load_prediction_model():
-    print("Loading Model...")
-    global prediction_model, data_details
+model = AutoModelForCausalLM.from_pretrained(
+    model_id, model_type="llama", lib="avx2", hf=True
+)
+tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
 
-    best_model_path = os.path.join(
-        local_experiments_path,
-        best_model["experiment"],
-        best_model["model_name"] + ".keras",
+
+def get_prompt(
+    message: str, chat_history: list[tuple[str, str]], system_prompt: str
+) -> str:
+    # logger.info("get_prompt chat_history=%s",chat_history)
+    # logger.info("get_prompt system_prompt=%s",system_prompt)
+    texts = [f"<s>[INST] <<SYS>>\n{system_prompt}\n<</SYS>>\n\n"]
+    # logger.info("texts=%s",texts)
+    do_strip = False
+    for user_input, response in chat_history:
+        user_input = user_input.strip() if do_strip else user_input
+        do_strip = True
+        texts.append(f"{user_input} [/INST] {response.strip()} </s><s>[INST] ")
+    message = message.strip() if do_strip else message
+    # logger.info("get_prompt message=%s",message)
+    texts.append(f"{message} [/INST]")
+    # logger.info("get_prompt final texts=%s",texts)
+    return "".join(texts)
+
+
+def get_input_token_length(
+    message: str, chat_history: list[tuple[str, str]], system_prompt: str
+) -> int:
+    # logger.info("get_input_token_length=%s",message)
+    prompt = get_prompt(message, chat_history, system_prompt)
+    # logger.info("prompt=%s",prompt)
+    input_ids = tokenizer([prompt], return_tensors="np", add_special_tokens=False)[
+        "input_ids"
+    ]
+    # logger.info("input_ids=%s",input_ids)
+    return input_ids.shape[-1]
+
+
+def run(
+    message: str,
+    chat_history: list[tuple[str, str]],
+    system_prompt: str,
+    max_new_tokens: int = 1024,
+    temperature: float = 0.8,
+    top_p: float = 0.95,
+    top_k: int = 50,
+) -> Iterator[str]:
+    prompt = get_prompt(message, chat_history, system_prompt)
+    inputs = tokenizer([prompt], return_tensors="pt", add_special_tokens=False).to(
+        device
     )
 
-    print("best_model_path:", best_model_path)
-    prediction_model = tf.keras.models.load_model(
-        best_model_path, custom_objects={"KerasLayer": hub.KerasLayer}
+    streamer = TextIteratorStreamer(
+        tokenizer, timeout=15.0, skip_prompt=True, skip_special_tokens=True
     )
-    print(prediction_model.summary())
-
-    data_details_path = os.path.join(
-        local_experiments_path, best_model["experiment"], "data_details.json"
+    generate_kwargs = dict(
+        inputs,
+        streamer=streamer,
+        max_new_tokens=max_new_tokens,
+        do_sample=True,
+        top_p=top_p,
+        top_k=top_k,
+        temperature=temperature,
+        num_beams=1,
     )
+    t = Thread(target=model.generate, kwargs=generate_kwargs)
+    t.start()
 
-    # Load data details
-    with open(data_details_path, "r") as json_file:
-        data_details = json.load(json_file)
-
-
-
-def load_preprocess_image_from_path(image_path):
-    print("Image", image_path)
-
-    image_width = 224
-    image_height = 224
-    num_channels = 3
-
-    # Prepare the data
-    def load_image(path):
-        image = tf.io.read_file(path)
-        image = tf.image.decode_jpeg(image, channels=num_channels)
-        image = tf.image.resize(image, [image_height, image_width])
-        return image
-
-    # Normalize pixels
-    def normalize(image):
-        image = image / 255
-        return image
-
-    test_data = tf.data.Dataset.from_tensor_slices(([image_path]))
-    test_data = test_data.map(load_image, num_parallel_calls=AUTOTUNE)
-    test_data = test_data.map(normalize, num_parallel_calls=AUTOTUNE)
-    test_data = test_data.repeat(1).batch(1)
-
-    return test_data
-
-
-def make_prediction(image_path):
-    check_model_change()
-
-    # Load & preprocess
-    test_data = load_preprocess_image_from_path(image_path)
-
-    # Make prediction
-    prediction = prediction_model.predict(test_data)
-    idx = prediction.argmax(axis=1)[0]
-    prediction_label = data_details["index2label"][str(idx)]
-
-    if prediction_model.layers[-1].activation.__name__ != "softmax":
-        prediction = tf.nn.softmax(prediction).numpy()
-        print(prediction)
-
-    poisonous = False
-    if prediction_label == "amanita":
-        poisonous = True
-
-    return {
-        "input_image_shape": str(test_data.element_spec.shape),
-        "prediction_shape": prediction.shape,
-        "prediction_label": prediction_label,
-        "prediction": prediction.tolist(),
-        "accuracy": round(np.max(prediction) * 100, 2),
-        "poisonous": poisonous,
-    }
+    outputs = []
+    for text in streamer:
+        outputs.append(text)
+        yield "".join(outputs)
