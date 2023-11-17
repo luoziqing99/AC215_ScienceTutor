@@ -1,22 +1,22 @@
-# ENV
-FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
-RUN apt-get update && apt-get install -y git wget jq
+# # ENV
+# FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
+# RUN apt-get update && apt-get install -y git wget jq
 
-#CMD ["bash"]
+# #CMD ["bash"]
 
-# APP
-WORKDIR /app
-RUN \
-    pip --no-cache-dir install transformers datasets einops gradio peft pyyaml \
-        colorama markdown pandas Pillow requests scipy sentencepiece tqdm \
-        torch-grammar bitsandbytes protobuf flask flasgger;
-RUN \
-    git clone https://github.com/haotian-liu/LLaVA.git && \
-    cd /LLaVA && \
-    pip install -e .;
-WORKDIR /app/LLaVA
-EXPOSE 7860
-ENTRYPOINT ["/bin/bash"]
+# # APP
+# WORKDIR /app
+# RUN \
+#     pip --no-cache-dir install transformers datasets einops gradio peft pyyaml \
+#         colorama markdown pandas Pillow requests scipy sentencepiece tqdm \
+#         torch-grammar bitsandbytes protobuf flask flasgger;
+# RUN \
+#     git clone https://github.com/haotian-liu/LLaVA.git && \
+#     cd /LLaVA && \
+#     pip install -e .;
+# WORKDIR /app/LLaVA
+# EXPOSE 7860
+# ENTRYPOINT ["/bin/bash"]
 
 # Use the official Debian-hosted Python image
 FROM python:3.9
