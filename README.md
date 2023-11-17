@@ -1,8 +1,10 @@
 # AC215 - ScienceTutor
 
 ## Application Pipeline Flow
+<img width="1362" alt="image" src="pictures/science_tutor_app_pipeline2.png">
 
-<img width="1362" alt="image" src="pictures/science_tutor_app_pipeline.png">
+## Vertex AI Pipeline for ML Workflow
+<img width="800" alt="image" src="pictures/ml_workflow.png">
 
 ## Project Organization
       .
@@ -11,20 +13,27 @@
       ├── notebooks
       │   └── AC215_milestone3_model_training.ipynb
       ├── pictures
-      │   ├── science_tutor_app_pipeline.png
+      │   ├── compute_engine.png
       │   ├── gcs_model_bucket.png
+      │   ├── ml_workflow.png
+      │   ├── ml_workflow_pipeline_run.png
+      │   ├── science_tutor_app_pipeline.png
+      │   ├── science_tutor_app_pipeline2.png
       │   ├── vertex_ai_model_training.png
       │   ├── wandb_system.png
-      │   └── wandb_train.png
+      │   ├── wandb_train.png
+      │   └── web_server_demo.png
       ├── references
       ├── reports
       └── src
             ├── data_processing
             │   ├── Dockerfile
+            │   ├── docker-shell.sh
             │   ├── convert_scienceqa_to_llava.py
             │   ├── ScienceQA-LLAVA.dvc
             │   ├── upload_to_gcs.py
             │   ├── upload_to_hf.py
+            │   ├── utils.py
             │   └── requirements.txt
             ├── model_training
             │   ├── package
@@ -35,29 +44,41 @@
             │   │   ├── PKG-INFO
             │   │   ├── setup.cfg
             │   │   └── setup.py
-            │   ├── cli.py
+            │   ├── Dockerfile
+            │   ├── Pipfile
+            │   ├── Pipfile.lock
             │   ├── cli.sh
             │   ├── docker-entrypoint.sh
             │   ├── docker-shell.sh
-            │   ├── Dockerfile
             │   ├── download_from_gcs.py
             │   ├── download_from_hf.py
             │   ├── package-trainer.sh
+            │   ├── Pipfile.lock
+            │   ├── upload_model_to_gcs.py
+            │   └── upload_trainer_to_gcs.py
+            ├── ml_workflow
+            │   ├── Dockerfile
             │   ├── Pipfile
             │   ├── Pipfile.lock
-            │   └──upload_trainer_to_gcs.py
-            ├── chatbot_logic
-            │   ├── Dockerfile
+            │   ├── cli.py
+            │   ├── docker-entrypoint.sh
             │   ├── docker-shell.sh
-            │   ├── Pipfile
-            │   └── Pipfile.lock
-            └── web_server
+            │   ├── model.py
+            │   ├── model_training.yaml
+            │   └── pipeline.yaml
+            ├── model_inference
+            │   ├── compute_metric.py
+            │   └── model_vqa_science.py
+            └── model_deploy
+                ├── api_example
+                │   ├── req.json
+                │   └── websocket_streaming.py
                 ├── Dockerfile
                 ├── docker-shell.sh
-                ├── Pipfile
-                └── Pipfile.lock
+                └── failed_vertex_ai_script.py
 
-## AC215 - Milestone3 - ScienceTutor
+
+## AC215 - Milestone4 - ScienceTutor
 
 **Team Members** Sijia (Nancy) Li, Ziqing Luo, Yuqing Pan, Jiashu Xu, Xiaohan Zhao
 
@@ -65,9 +86,14 @@
 
 **Project** In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
 
-### Milestone3
+### Milestone4
+In milestone4, we developed an ML workflow on Google Cloud Platform (GCP). We created a script to call the `data_processing` and `model_training` tasks, as well as running these tasks. We have been adviced that Vertex AI pipeline is not suitable for model deployment for our project as we have our own service and API, like a web server. Since GCP Cloud Run does not support GPU, we deployed our model using GCP Compute Engine. Model deployment details can be found in the **Model Deployment** section of the README below. 
 
-We further refined our data pipeline process for milestone 3 by forking the LLaVA repository and [updating the code for passing in the ScienceQA that we preprocessed](https://github.com/cnut1648/LLaVA). By doing this, we customized the model to take into our own preprocessed ScienceQA dataset. 
+Regarding the modeling process, we tried various optimization techniques to reduce memory usage. We also performed model inference by evaluating the model's performance on the test set of ScienceQA. We achieved a test accuracy of 65.53%.
+
+
+## Model Training
+We forked the LLaVA repository and [updated the code for passing in the ScienceQA that we preprocessed](https://github.com/cnut1648/LLaVA). By doing this, we customized the model to take into our own preprocessed ScienceQA dataset. 
 
 Regarding the modeling process, we tried several optimization techniques to reduce memory usage: 
 - bf16
@@ -109,7 +135,7 @@ Vertex AI showing our attempts for model training (currently we are still restri
 
 ## Dataset Evaluation
 
-We have trained the model on ScienceQA, and to evaluate our model performance on science domain, we provice code to evalaute on the testset of ScienceQA, which contains 4241 instances.
+We have trained the model on ScienceQA, and to evaluate our model performance on science domain, we provice code to evaluate on the testset of ScienceQA, which contains 4241 instances.
 
 ```shell
 cd src/model_inference;
@@ -132,11 +158,11 @@ Total: 4241, Correct: 2779, Accuracy: 65.53%, IMG-Accuracy: 63.86%
 ```
 which is pretty close to the performance reported by the LLaVA 13B (~70%). Note that that is a larger model with a possibly more careful hyperparameter tuning while we only train for one epoch with a default hyperparameter.
 
-## Web Server (aka Model Deployment)
-We have deployed our model such that user can interact with our model through a web interface. In `web_server/` directory, you can build the `Dockerfile`.
+## Model Deploy
+We have deployed our model such that user can interact with our model through a web interface. In `model_deploy/` directory, you can build the `Dockerfile`.
 We have configurated the UI such that
 - It supports multi-GPU inference. It will dynamically allocate GPUs memory available to your system.   
-- It loads the 4bit quantized model to further reduce the memory usage.
+- It loads the **4bit quantized model** to further reduce the memory usage.
 - The model it loaded is our LLaVA 7b model.
 - We export port 7860 for the web server. 
  
@@ -152,7 +178,7 @@ docker run --gpus all -p 7860:7860 -t ui
 An example conversation with our model is shown below:
 <img width="1362" alt="image" src="pictures/web_server_demo.png">
 
-For online deployment, we have attempted to deploy our model on Vertex AI Endpoint, via the script in [`src/src/web_server/failed_vertex_ai_script.py`](src/web_server/failed_vertex_ai_script.py).
+For online deployment, we have attempted to deploy our model on Vertex AI Endpoint, via the script in [`src/src/model_deploy/failed_vertex_ai_script.py`](src/model_deploy/failed_vertex_ai_script.py).
 However we are advised by Shivas that Vertex AI is not suitable for our use case, because Vertex AI takes only a model and build the API endpoint for you while we have our own service and API, like a web server.
 We are then suggested to try compute engine or cloud run. However there is no GPU support for cloud run, so as a workaround, we use compute engine instead.
 
@@ -162,7 +188,7 @@ As we quantized our model, we have successfully reduced the memory usage and are
 Note that there is an external IP assigned, so that user can directly go to `http://34.125.115.138:7860/` to access our service.
 We have stopped the instance to save cost as keeping it running all day would quickly exhaust our credits. Please contact us if you want to try it out, and we will start the instance for you.
 
-Alternatively, our docker also supports handling direct requests. For example, you can create a `req.json` like this (checkout [`src/web_server/api_example/req.json`](src/web_server/api_example/req.json)):
+Alternatively, our docker also supports handling direct requests. For example, you can create a `req.json` like this (checkout [`src/model_deploy/api_example/req.json`](src/model_deploy/api_example/req.json)):
 ```json
 {
     "prompt": "Put an elephant in a fridge in three steps:\n1)",
@@ -176,7 +202,7 @@ curl -X POST -d "@req.json" -H "Content-Type: application/json" http://34.125.11
 # {"results": [{"text": " Open the refrigerator door.\n2) Place the elephant inside the refrigerator.\n3) Close the refrigerator door."}]}
 ```
 
-Or, if user prefer streaming API via websocket, you can use the python code in [`src/web_server/api_example/websocket_streaming.py`](src/web_server/api_example/websocket_streaming.py) to interact with our model.
+Or, if user prefer streaming API via websocket, you can use the python code in [`src/model_deploy/api_example/websocket_streaming.py`](src/model_deploy/api_example/websocket_streaming.py) to interact with our model.
 The output will be generated in a stream, similar to ChatGPT interface.
 
 ## Code Structure
@@ -260,7 +286,7 @@ Files for downloading the datasets:
 
 (2) [`src/model_training/download_from_gcs.py`](src/model_training/download_from_gcs.py): This script downloads the dataset from Google Cloud Storage.
 
-(3) [`src/model_training/Dockerfile`](src/model_training/Dockerfile), [`src/model_training/Pipfile`](src/model_training/Pipfile), [`src/model_training/Pipfile.lock`](src/model_training/Pipfile.lock), [`src/model_training/docker-entrypoint.sh`](src/model_training/docker-entrypoint.sh), [`src/model_training/docker-shell.sh`](src/model_training/docker-shell.sh): These are the files to build the container.
+(3) [`src/model_training/Dockerfile`](src/model_training/Dockerfile), [`src/model_training/Pipfile`](src/model_training/Pipfile), [`src/model_training/Pipfile.lock`](src/model_training/Pipfile.lock), [`src/model_training/docker-entrypoint.sh`](src/model_training/docker-entrypoint.sh), [`src/model_training/docker-shell.sh`](src/model_training/docker-shell.sh): These are the files to build and run the container.
 
 (4) [`src/model_training/package/`](src/model_training/package/): This is the folder that contains the model training code and wandb_api_key upload code.
 
@@ -273,27 +299,44 @@ Files for downloading the datasets:
 (8) [`src/model_training/cli.py`](src/model_training/cli.py), [`src/model_training/cli.sh`](src/model_training/cli.sh): These are the scripts for command-line interface (CLI) to create custom model training jobs on Vertex AI. 
 
 
-#### (3) Web Server Container
-This container serves as the frontend of our Science Tutor chatbot application. It handles HTTP requests, provides a user interface, and communicates with the chatbot logic component.
+#### (3) ML Workflow Container
+This container contains will build the ML workflow on Vertex Ai pipeline for data processing and model training. 
+
+To build and run the container, and run the ML workflow on Vertex AI:
+```shell
+cd src/ml_workflow
+sh docker-shell.sh
+python3 cli.py -p # Run just the Data Processor
+python3 cli.py -t # Run just Model Training
+python3 cli.py -w # Run the ScienceTutor App Pipeline (Data Processor and Model Training)
+```
+
+(1) [`src/ml_workflow/cli.py`](src/ml_workflow/cli.py): The CLI to test creation and execution of pipelines.
+
+(2) [`src/ml_workflow/model_training.yaml`](src/ml_workflow/model_training.yaml), [`src/ml_workflow/pipeline.yaml`](src/ml_workflow/pipeline.yaml): The generated pipeline definition files.
+
+(3) [`src/ml_workflow/Dockerfile`](src/ml_workflow/Dockerfile), [`src/ml_workflow/Pipfile`](src/ml_workflow/Pipfile), [`src/ml_workflow/Pipfile.lock`](src/ml_workflow/Pipfile.lock), [`src/ml_workflow/docker-entrypoint.sh`](src/ml_workflow/docker-entrypoint.sh), [`src/ml_workflow/docker-shell.sh`](src/ml_workflow/docker-shell.sh): These are the files to build and run the container.
+
+The Data Processor component processes the ScienceQA dataset from huggingface and converts the data into LLaVA format for training the LLaVA model. The Model Training component takes the packaged model training code and sends job to Vertex AI to finetune the LLaVA model on the science domain. The Vertex AI Pipeline for ML Workflow is shown below (the Compute Engine component is discussed in the Model Deploy Container section). 
+
+<img width="800" alt="image" src="pictures/ml_workflow.png">
+
+<img width="800" alt="image" src="pictures/ml_workflow_pipeline_run.png">
+
+
+#### (4) Model Deploy Container
+This container contains the code for deploying our Science Tutor chatbot application on GCP Compute Engine. Our custom container also supports handling direct requests via a json file or streaming API via websocket.
 
 To build and run the container:
 ```shell
-cd src/web_server
+cd src/model_deploy
 sh docker-shell.sh
 ```
 
-In this milestone, it is a placeholder for future implementation.
+(1) [`src/api_example/`](src/api_example/): This folder contains an example of streaming API via websocket.
 
-#### (4) Chatbot Logic Container
-This container contains the core chatbot logic. It processes user messages received from the web server container, conducts inference with the model API and generates responses.
+(2) [`src/model_deploy/Dockerfile`](src/model_deploy/Dockerfile), [`src/model_deploy/docker-shell.sh`](src/model_deploy/docker-shell.sh): These are the files for building and running the container.
 
-To build and run the container:
-```shell
-cd src/chatbot_logic
-sh docker-shell.sh
-```
-
-In this milestone, it is a placeholder for future implementation.
 
 #### (5) Flask Backend
 In `src/backend` directory, you can launch the backend server by running `python model_backend.py`. It will start a flask server at `http://localhost:5000/`. It will serve as the backend for our web UI.
@@ -304,6 +347,9 @@ It is advised to use postman to test the API.
 <img src="pictures/postman.png">
 
 #### (5) Other Containers
-In addition to the existing containers, we may consider incorporating additional containers as the need arises. 
-This may include a database container for the storage of user message data, and a recommendation engine container housing the logic for recommending posts or videos based on the questions user asked.
+In addition to the existing containers, we may consider incorporating additional containers as the need arises. This may include a database container for the storage of user message data, and a recommendation engine container housing the logic for recommending posts or videos based on the questions user asked.
 
+
+#### (6) Other Source Code
+##### Model Inference
+[`src/model_inference/compute_metric.py`](src/model_inference/compute_metric.py), [`src/model_inference/model_vqa_science.py`](src/model_inference/model_vqa_science.py): Using these two scripts, we perform model inference on the test set of ScienceQA to examine the performance of our LLaVA-7B model finefuned on the science domain. 
