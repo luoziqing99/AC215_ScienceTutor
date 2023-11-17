@@ -9,6 +9,7 @@ from google.cloud import aiplatform
 import base64
 
 
+AUTOTUNE = tf.data.experimental.AUTOTUNE
 local_experiments_path = "/persistent/experiments"
 best_model = None
 best_model_id = None
@@ -107,6 +108,43 @@ def make_prediction(image_path):
         "prediction_shape": prediction.shape,
         "prediction_label": prediction_label,
         "prediction": prediction.tolist(),
+        "accuracy": round(np.max(prediction) * 100, 2),
+        "poisonous": poisonous,
+    }
+
+
+def make_prediction_vertexai(image_path):
+    print("Predict using Vertex AI endpoint")
+
+    # Get the endpoint
+    # Endpoint format: endpoint_name="projects/{PROJECT_NUMBER}/locations/us-central1/endpoints/{ENDPOINT_ID}"
+    endpoint = aiplatform.Endpoint(
+        "projects/129349313346/locations/us-central1/endpoints/8600804363952193536"
+    )
+
+    with open(image_path, "rb") as f:
+        data = f.read()
+    b64str = base64.b64encode(data).decode("utf-8")
+    # The format of each instance should conform to the deployed model's prediction input schema.
+    instances = [{"bytes_inputs": {"b64": b64str}}]
+
+    result = endpoint.predict(instances=instances)
+
+    print("Result:", result)
+    prediction = result.predictions[0]
+    print(prediction, prediction.index(max(prediction)))
+
+    index2label = {0: "oyster", 1: "crimini", 2: "amanita"}
+
+    prediction_label = index2label[prediction.index(max(prediction))]
+
+    poisonous = False
+    if prediction_label == "amanita":
+        poisonous = True
+
+    return {
+        "prediction_label": prediction_label,
+        "prediction": prediction,
         "accuracy": round(np.max(prediction) * 100, 2),
         "poisonous": poisonous,
     }
