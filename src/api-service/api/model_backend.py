@@ -45,8 +45,8 @@ class ChatView(SwaggerView):
         qs = request.form.get("prompt")
         temperature = float(request.form.get("temperature", 1.0))
         print(request.form)
-        history = request.form.getlist("history")
-        print("Provided history: ", history)
+        # history = request.form.getlist("history")
+        # print("Provided history: ", history)
 
         # Check if an image is provided and process it
         cur_prompt = qs
@@ -88,12 +88,10 @@ class ChatView(SwaggerView):
                 streamer=streamer,
                 use_cache=True,
                 stopping_criteria=stopping_criteria,
+                top_p=1.0,
             )
 
         input_token_len = input_ids.shape[1]
-        n_diff_input_output = (input_ids != output_ids[:, :input_token_len]).sum().item()
-        if n_diff_input_output > 0:
-            print(f'[Warning] {n_diff_input_output} output_ids are not the same as the input_ids')
         outputs = tokenizer.batch_decode(output_ids[:, input_token_len:], skip_special_tokens=True)[0]
         outputs = outputs.strip()
         if outputs.endswith(stop_str):
