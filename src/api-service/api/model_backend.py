@@ -1,8 +1,15 @@
+from pathlib import Path
+
 from flask import Flask, request, jsonify
 from flasgger import Swagger, SwaggerView, Schema, fields
 from io import BytesIO
 import torch
 import requests
+pwd = Path(__file__).parent.resolve()
+import sys, os
+sys.path.insert(0, "LLaVA")
+# print(sys.path)
+# print(os.environ.get("PYTHONPATH"))
 from llava.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 from llava.conversation import conv_templates, SeparatorStyle
 from llava.model.builder import load_pretrained_model
@@ -13,15 +20,6 @@ from PIL import Image
 
 # Load pre-trained model and tokenizer
 disable_torch_init()
-model_path = "liuhaotian/llava-v1.5-7b"
-model_name = get_model_name_from_path(model_path)
-tokenizer, model, image_processor, context_len = load_pretrained_model(
-        model_path, 
-        model_name=model_name, 
-        model_base=None, 
-        load_8bit=False, 
-        load_4bit=True
-)
 
 class Prompt(Schema):
     prompt = fields.Str(required=True)
@@ -44,31 +42,42 @@ class ChatView(SwaggerView):
         # Extract text data from form-data
         qs = request.form.get("prompt")
         temperature = float(request.form.get("temperature", 1.0))
-        print(request.form)
-        # history = request.form.getlist("history")
-        # print("Provided history: ", history)
+
+        conv_mode = "llava_v0"
+        conv = conv_templates[conv_mode].copy()
+        # Check if history is provided and process it
+        if 'history' in request.form:
+            history = request.form.getlist("history")
+            assert len(history) % 2 == 0, "History must be a list of alternating user and assistants messages"
+            print("Provided history: ", history)
+            # # assume first history always starts with user
+            for i in range(0, len(history), 2):
+                conv.append_message(conv.roles[0], history[i])
+                conv.append_message(conv.roles[1], history[i + 1])
+            # for prompt in history:
+            #     role, sentence = prompt.strip(')()').split(', ')
+            #     conv.append_message(role, sentence)
 
         # Check if an image is provided and process it
-        cur_prompt = qs
+        # cur_prompt = qs
         if 'image' in request.files:
             image_file = request.files['image']
-            response = requests.get(image_file)
-            image = Image.open(BytesIO(response.content)).convert('RGB')
+            # response = requests.get(image_file)
+            # image = Image.open(BytesIO(response.content)).convert('RGB')
+            image = Image.open(BytesIO(image_file.read()))
             image_tensor = image_processor.preprocess(image, return_tensors='pt')['pixel_values'][0]
             images = image_tensor.unsqueeze(0).half().cuda()
             if getattr(model.config, 'mm_use_im_start_end', False):
                 qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_TOKEN + DEFAULT_IM_END_TOKEN + '\n' + qs
             else:
                 qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
-            cur_prompt = '<image>' + '\n' + cur_prompt
         else:
             images = None
 
-        conv_mode = "llava_v0"
-        conv = conv_templates[conv_mode].copy()
         conv.append_message(conv.roles[0], qs)
         conv.append_message(conv.roles[1], None)
         prompt = conv.get_prompt()
+        print(prompt)
 
         input_ids = tokenizer_image_token(prompt, tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).cuda()
 
@@ -111,4 +120,16 @@ app.add_url_rule('/chat', view_func=ChatView.as_view('chat'), methods=['POST'])
 
 # Run the Flask app
 if __name__ == '__main__':
-    app.run(debug=True)
+
+    model_path = "cnut1648/llava-v1.5-7b"
+    model_name = get_model_name_from_path(model_path)  # "llava-v1.5-7b"
+    tokenizer, model, image_processor, context_len = load_pretrained_model(
+        model_path,
+        model_name=model_name,
+        model_base=None,
+        load_8bit=False,
+        load_4bit=True,
+        device_map="auto",
+    )
+
+    app.run(debug=False)

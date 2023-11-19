@@ -140,3 +140,5 @@ src/data_processing/*.json
 scienceqa-*.json*
 
 **/text-generation-webui
+
+src/api-service/api/LLaVA
