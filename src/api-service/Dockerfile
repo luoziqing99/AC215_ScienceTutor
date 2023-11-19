@@ -10,9 +10,12 @@ RUN \
     pip --no-cache-dir install -r requirements.txt;
 RUN \
     git clone https://github.com/haotian-liu/LLaVA.git && \
-    cd /LLaVA && \
-    pip install -e .;
+    cd /LLaVA;
+
 WORKDIR /app/LLaVA
+RUN \
+    pip install -e .;
+    
 EXPOSE 9000
 ENTRYPOINT ["/bin/bash"]
 

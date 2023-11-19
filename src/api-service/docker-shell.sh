@@ -14,5 +14,10 @@ docker build -t $IMAGE_NAME --platform=linux/amd64 -f Dockerfile .
 docker run --rm --name $IMAGE_NAME -ti \
 --mount type=bind,source="$BASE_DIR",target=/app \
 -p 9001:9000 \
--e HUGGING_FACE_HUB_TOKEN=$HUGGING_FACE_HUB_TOKEN \
 -e DEV=1 $IMAGE_NAME
+
+# docker run --rm --name $IMAGE_NAME -ti \
+# --mount type=bind,source="$BASE_DIR",target=/app \
+# -p 9001:9000 \
+# -e HUGGING_FACE_HUB_TOKEN=$HUGGING_FACE_HUB_TOKEN \
+# -e DEV=1 $IMAGE_NAME
