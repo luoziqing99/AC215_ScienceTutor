@@ -3,6 +3,7 @@ from pathlib import Path
 from flask import Flask, request, jsonify
 from flasgger import Swagger, SwaggerView, Schema, fields
 from io import BytesIO
+from flask_cors import CORS
 import torch
 import requests
 pwd = Path(__file__).parent.resolve()
@@ -46,9 +47,9 @@ class ChatView(SwaggerView):
         conv_mode = "llava_v0"
         conv = conv_templates[conv_mode].copy()
         # Check if history is provided and process it
-        if 'history' in request.form:
-            history = request.form.getlist("history")
-            assert len(history) % 2 == 0, "History must be a list of alternating user and assistants messages"
+        if 'history[]' in request.form:
+            history = request.form.getlist("history[]")
+            assert len(history) % 2 == 0, f"History must be a list of alternating user and assistants messages, but got {history}"
             print("Provided history: ", history)
             # # assume first history always starts with user
             for i in range(0, len(history), 2):
@@ -59,7 +60,6 @@ class ChatView(SwaggerView):
             #     conv.append_message(role, sentence)
 
         # Check if an image is provided and process it
-        # cur_prompt = qs
         if 'image' in request.files:
             image_file = request.files['image']
             # response = requests.get(image_file)
@@ -117,6 +117,7 @@ app = Flask(__name__)
 swagger = Swagger(app)
 
 app.add_url_rule('/chat', view_func=ChatView.as_view('chat'), methods=['POST'])
+CORS(app)
 
 # Run the Flask app
 if __name__ == '__main__':

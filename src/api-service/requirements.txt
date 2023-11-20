@@ -10,6 +10,7 @@ sentencepiece
 tqdm
 torch-grammar 
 marshmallow
+flask-cors
 apispec
 bitsandbytes
 einops
