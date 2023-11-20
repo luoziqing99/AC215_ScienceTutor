@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Configuration, OpenAIApi } from "openai";
 
+// Reference: https://github.com/EBEREGIT/react-chatgpt-tutorial
+
 const configuration = new Configuration({
   organization: "org-0nmrFWw6wSm6xIJXSbx4FpTw",
   apiKey: "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",
