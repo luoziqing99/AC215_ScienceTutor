@@ -8,4 +8,6 @@ requests
 sentencepiece 
 tqdm
 torch-grammar 
+marshmallow
+apispec
 bitsandbytes

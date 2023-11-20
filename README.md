@@ -340,8 +340,20 @@ sh docker-shell.sh
 
 #### (5) Flask Backend
 In `src/backend` directory, you can launch the backend server by running `python model_backend.py`. It will start a flask server at `http://localhost:5000/`. It will serve as the backend for our web UI.
+We also provide Dockerfile for the backend server, and you can build it via the following commands in the `src/api-service` directory:
+```shell
+# build docker
+docker build . -t backend
+
+# use all your GPUs 
+# it will hang, until you manually terminate the container
+# access the backend endpoint at http://localhost:5000/chat
+docker run --gpus all -p 5000:5000 -t backend
+```
 
 Currently there is a `/chat` endpoint with `POST` method. You can check `/apidocs` for Swagger UI API docs.
+
+<img src="pictures/apidoc.png" style="width:200px">
 
 It is advised to use postman to test the API.
 <img src="pictures/postman.png">
