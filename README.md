@@ -1,10 +1,6 @@
 # AC215 - ScienceTutor
 
-## Application Pipeline Flow
-<img width="1362" alt="image" src="pictures/science_tutor_app_pipeline2.png">
 
-## Vertex AI Pipeline for ML Workflow
-<img width="800" alt="image" src="pictures/ml_workflow.png">
 
 ## Project Organization
       .
@@ -78,7 +74,7 @@
                 └── failed_vertex_ai_script.py
 
 
-## AC215 - Milestone4 - ScienceTutor
+## AC215 - Milestone5 - ScienceTutor
 
 **Team Members** Sijia (Nancy) Li, Ziqing Luo, Yuqing Pan, Jiashu Xu, Xiaohan Zhao
 
@@ -86,11 +82,19 @@
 
 **Project** In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
 
-### Milestone4
-In milestone4, we developed an ML workflow on Google Cloud Platform (GCP). We created a script to call the `data_processing` and `model_training` tasks, as well as running these tasks. We have been adviced that Vertex AI pipeline is not suitable for model deployment for our project as we have our own service and API, like a web server. Since GCP Cloud Run does not support GPU, we deployed our model using GCP Compute Engine. Model deployment details can be found in the **Model Deployment** section of the README below. 
+### Milestone5
+After completions of building a robust ML Pipeline in our previous milestone we have built a backend api service using Flask and a frontend web app using React. 
+This will be our user-facing application that ties together the various components built in previous milestones.
 
-Regarding the modeling process, we tried various optimization techniques to reduce memory usage. We also performed model inference by evaluating the model's performance on the test set of ScienceQA. We achieved a test accuracy of 65.53%.
+## Application Design
+Before we start implementing the app we built a detailed design document outlining the application’s architecture. 
+We built a Solution Architecture abd Technical Architecture to ensure all our components work together.
 
+### Solution Architecture
+<img width="1362" alt="image" src="pictures/solution_architecture.png">
+
+### Technical Architecture
+<img width="1362" alt="image" src="pictures/technical_architecture.png">
 
 ## Model Training
 We forked the LLaVA repository and [updated the code for passing in the ScienceQA that we preprocessed](https://github.com/cnut1648/LLaVA). By doing this, we customized the model to take into our own preprocessed ScienceQA dataset. 
