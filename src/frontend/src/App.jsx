@@ -66,6 +66,20 @@ function App() {
       msgs.push({ role: "user", content: image });
     }
 
+    // Example of a POST request with JSON data
+    axios.post('http://f0e9-34-125-132-46.ngrok-free.app/chat', {
+      prompt: message,
+      image: image,
+      history: "",
+    })
+    .then(response => {
+      // Process the data received from the API after POST request
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Axios error:', error);
+    });
+
     setChats(msgs);
     setMessage("");
     setImage(null);
