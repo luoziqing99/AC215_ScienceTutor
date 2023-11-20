@@ -21,7 +21,7 @@ function App() {
       const systemMessage =
         "Hello! This is your Science Tutor. I can provide instant and expert answers to K12 science questions that you may have in different domains such as natural, social and language science. Feel free to ask me any questions you have and upload an image to start!";
       let delay = 0;
-      const typingSpeed = 10; // Adjust the typing speed (milliseconds per character)
+      const typingSpeed = 5; // Adjust the typing speed (milliseconds per character)
 
       // Simulate typing effect
       for (let i = 0; i < systemMessage.length; i++) {
@@ -55,62 +55,53 @@ function App() {
     scrollTo(0, 1e10);
 
     let msgs = chats;
+    const formData = new FormData();
+    formData.append("temperature", 0.9);
 
     // Add text message to messages
     if (message) {
       msgs.push({ role: "user", content: message });
+      formData.append("prompt", message);
+    }
+    // msgs contain (1) system prompts (2) every previous history (3) current message
+    if (msgs.length > 2) {
+      // every history except the first and last
+      msgs.slice(1, -1).forEach((item, index) => {
+        formData.append(`history[]`, item.content);
+      })
     }
 
     // Add image to messages
     if (image) {
       msgs.push({ role: "user", content: image });
+      formData.append("image", image, 'file');
     }
-
-    // Example of a POST request with JSON data
-    axios.post('http://f0e9-34-125-132-46.ngrok-free.app/chat', {
-      prompt: message,
-      image: image,
-      history: "",
-    })
-    .then(response => {
-      // Process the data received from the API after POST request
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error('Axios error:', error);
-    });
-
     setChats(msgs);
     setMessage("");
     setImage(null);
 
-    // Create chat completion
-    await openai
-      .createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "assistant",
-            content: "You are a EbereGPT. You can help with graphic design tasks",
-          },
-          ...msgs,
-        ],
-      })
-      .then((res) => {
-        msgs.push({ role: "assistant", content: res.data.choices[0].message });
-        setChats(msgs);
-        setIsTyping(false);
-        scrollTo(0, 1e10);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    console.log("Trying to send", chats, formData)
+    // fetch("http://127.0.0.1:5000/chat", {
+    fetch("http://34.125.158.148:5000/chat", {
+      "method": "POST",
+      body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          msgs.push({ role: "assistant", content: data.response });
+          setChats(msgs);
+          setIsTyping(false);
+          scrollTo(0, 1e10);
+        })
+        .catch(error => console.error('Error:', error));
   };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
+      // setImage(URL.createObjectURL(file));
+      setImage(file);
     }
   };
 
@@ -130,10 +121,10 @@ function App() {
                   <div className="role-icon">
                     <img src={roleIcons[chat.role]} alt={chat.role} />
                   </div>
-                  {chat.content.startsWith("blob:") ? (
-                    <img src={chat.content} alt="Uploaded" className="uploaded-image" />
+                  {chat.content instanceof File ? (
+                      <img src={URL.createObjectURL(chat.content)} alt="Uploaded" className="uploaded-image" />
                   ) : (
-                    <p>{chat.content}</p>
+                      <p>{chat.content}</p>
                   )}
                 </div>
               ))
