@@ -1,0 +1,145 @@
+body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+  }
+  
+  .app-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+  }
+  
+  .main-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 800px; /* Adjust the max-width as needed */
+    margin: 0 auto; /* Center the chatbot window horizontally */
+  }
+
+
+main {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Set the height of the main container to the full height of the viewport */
+    justify-content: space-between; /* Align content at the start and end of the container */
+  }
+  
+  section {
+    flex-grow: 1; /* Allow the chat history section to grow and take remaining space */
+    overflow-y: auto; /* Enable vertical scrolling if the content overflows */
+  }
+  
+  form {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  /*  background-color: #f0f0f0; /* Set a background color for the input area */
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .message-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Updated to space-between */
+    margin-top: 10px;
+  }
+  
+  .message-form input[type="text"] {
+    width: 70%; /* Set the desired width for the text input */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word; /* or use overflow-wrap: break-word; */
+    overflow-wrap: break-word;
+    color: white;
+  }
+  
+  .message-form input[type="file"] {
+    width: 29%; /* Adjust the width for the file input */
+    flex-grow: 1; /* Adjust the width for the file input */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 5px;
+  }
+  
+  
+  .send-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex; /* Added display: flex; to allow centering */
+    align-items: center; /* Center content vertically within the button */
+  }
+  
+  .send-button img {
+    width: 30px; /* Adjust the width as needed */
+    height: 30px; /* Adjust the height as needed */
+
+
+  }
+  
+  .image-upload-label {
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .upload-icon {
+    width: 10px; /* Adjust the size as needed */
+    height: 10px;
+  }
+
+  .uploaded-image {
+    max-width: 100%; /* Ensure the image doesn't exceed the container width */
+    max-height: 200px; /* Set the maximum height of the image */
+    border-radius: 5px; /* Add border-radius for rounded corners if desired */
+  }
+
+
+ /* Add this style for the role icon */
+.role-icon img{
+    width: 30px; /* Adjust the width as needed */
+    height: 30px; /* Adjust the height as needed */
+  }
+
+  
+  /* Modify the style for the conversation box */
+  .user_msg p, .assistant_msg p  {
+    display: flex;
+    align-items: center;
+    padding: 20px; 
+  }
+  
+ .assistant-msg {
+    display: flex;
+    align-items: center;
+    border-radius: 2px; /* Set the border radius to make it rounded */
+    padding: 10px; /* Set padding to add space around the content */
+    margin: 0; /* Set margin to add space between messages */
+
+  }
+
+  .user-msg {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: 2px; /* Set the border radius to make it rounded */
+    padding: 10px; /* Set padding to add space around the content */
+    margin: 0; /* Set margin to add space between messages */
+
+  }
+  
+  .message-content {
+    max-width: 70%; /* Adjust the maximum width of the message content */
+  }
+  
