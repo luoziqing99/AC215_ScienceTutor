@@ -1,6 +1,7 @@
 flask
 flasgger
-transformers 
+transformers==4.34.0
+accelerate
 datasets 
 pandas 
 Pillow 
@@ -11,3 +12,4 @@ torch-grammar
 marshmallow
 apispec
 bitsandbytes
+einops
