@@ -1,7 +1,5 @@
 # AC215 - ScienceTutor
 
-
-
 ## Project Organization
       .
       ├── LICENSE
