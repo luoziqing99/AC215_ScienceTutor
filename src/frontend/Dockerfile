@@ -1,19 +1,18 @@
-FROM node:14.18.0-buster-slim
+FROM node:14.18.0-alpine as build
 
-# Update baseline and ensure we don't run the app as root.
-RUN set -ex; \
-    apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends openssl && \
-    npm install -g http-server && \
-    useradd -ms /bin/bash app -d /home/app -G sudo -u 2000 -p "$(openssl passwd -1 Passw0rd)" && \
-    mkdir -p /app && \
-    chown app:app /app
-
-EXPOSE 8080
-
-# Switch to the new user
-USER app
 WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+ENV PUBLIC_URL /
 
-ENTRYPOINT ["/bin/bash"]
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install
+
+COPY . ./
+RUN npm run build
+
+# Nginx wrapper to serve static files
+FROM nginx:stable
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
