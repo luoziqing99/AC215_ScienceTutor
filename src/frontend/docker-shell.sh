@@ -10,7 +10,7 @@ export IMAGE_NAME="frontend"
 export BASE_DIR=$(pwd)
 
 # Build the image based on the Dockerfile
-docker build -t $IMAGE_NAME --platform=linux/amd64/v2 -f Dockerfile.dev .
+docker build -t $IMAGE_NAME --platform=linux/amd64 -f Dockerfile.dev .
 
 # Run the container
 # --v: Attach a filesystem volume to the container
