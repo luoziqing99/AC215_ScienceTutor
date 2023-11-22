@@ -61,9 +61,14 @@
         name: "api-service"
         image: "gcr.io/{{ gcp_project }}/science-tutor-api-service:{{ tag.stdout}}"
         state: started
+        device_requests:
+            driver: nvidia
+            count: -1  # we want all
+            capabilities:
+              - - gpu
         recreate: yes
         published_ports:
-          - 9000:9000
+          - 5000:5000
         env:
           GOOGLE_APPLICATION_CREDENTIALS: "/secrets/gcp-service.json"
           GCS_BUCKET_NAME: "ac215-sciencetutor"

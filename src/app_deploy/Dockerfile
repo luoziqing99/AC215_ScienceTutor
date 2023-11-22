@@ -49,5 +49,8 @@ ADD --chown=app:app . /app
 RUN set -ex; \
     ansible-galaxy collection install community.general community.kubernetes
 
+RUN set -ex; \
+    ansible-galaxy install nvidia.nvidia_driver
+
 # Start a new shell to use the installed SDK
 ENTRYPOINT ["/bin/bash","./docker-entrypoint.sh"]

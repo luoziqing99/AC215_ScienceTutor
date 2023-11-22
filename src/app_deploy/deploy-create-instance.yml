@@ -42,6 +42,7 @@
         scopes: "{{gcp_scopes}}"
         zone: "{{ gcp_zone }}"
         project: "{{ gcp_project }}"
+        source_image: "projects/deeplearning-platform-release/global/images/family/pytorch-2-0-gpu-debian-11-py310"
         name: "{{ persistent_disk_name }}"
         size_gb: "{{ persistent_disk_size }}"
         state: present
@@ -57,7 +58,7 @@
           - auto_delete: true
             boot: true
             initialize_params:
-                source_image: "projects/debian-cloud/global/images/family/debian-11"
+                source_image: "projects/deeplearning-platform-release/global/images/family/pytorch-2-0-gpu-debian-11-py310"
                 disk_size_gb: "{{ machine_disk_size }}"
           - auto_delete: false
             boot: false
