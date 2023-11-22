@@ -62,6 +62,7 @@
         image: "gcr.io/{{ gcp_project }}/science-tutor-api-service:{{ tag.stdout}}"
         state: started
         device_requests:
+          - # Add nvidia GPUs to this container
             driver: nvidia
             count: -1  # we want all
             capabilities:
@@ -81,5 +82,5 @@
     - name: Check if containers are running
       shell: docker ps
 
-    - name: "Remove all unused containers"
-      shell: docker system prune -a -f
+#    - name: "Remove all unused containers"
+#      shell: docker system prune -a -f
