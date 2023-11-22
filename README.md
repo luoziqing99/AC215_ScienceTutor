@@ -101,6 +101,13 @@ We built a Solution Architecture abd Technical Architecture to ensure all our co
 
 
 ### Deployment
+We used Ansible and Kubernetes to create, provision, and deploy our frontend and backend to GCP in an automated fashion.
+
+We successfully created the Kubernetes cluster for our app in GCP:
+<img width="1362" alt="image" src="pictures/k8s.png">
+
+We can interact with the chatbot in our web browser:
+<img width="1362" alt="image" src="pictures/chatbot.png">
 
 
 ## Code Structure
@@ -114,7 +121,7 @@ The following are the folders from the previous milestones:
 - ml_workflow
 ```
 
-#### API Service Container
+### API Service Container
 In `src/backend` directory, you can launch the backend server by running `python model_backend.py`. It will start a flask server at `http://localhost:5000/`. It will serve as the backend for our web UI.
 We also provide Dockerfile for the backend server, and you can build it via the following commands in the `src/api-service` directory:
 ```shell
@@ -134,16 +141,33 @@ Currently there is a `/chat` endpoint with `POST` method. You can check `/apidoc
 It is advised to use postman to test the API.
 <img width="1362" src="pictures/postman.png">
 
-#### Frontend Container
+### Frontend Container
 
-#### Deployment Container
+### Deployment Container
 
-This container helps manage building and deploying all our app containers. The deployment is to GCP and all docker images go to GCR. 
+This container helps manage building and deploying all our app containers. 
+This can be achieved with Ansible, with or without Kubernetes.
 
 To run the container locally:
 - Open a terminal and go to the location `AC215_ScienceTutor/src/app_deploy`
 - Run `sh docker-shell.sh`
-- Build and Push Docker Containers to GCR (Google Container Registry)
+
+#### Deploy with Ansible and Kubernetes
+
+- Build and Push Docker Containers to GCR
+```
+ansible-playbook deploy-docker-images.yml -i inventory.yml
+```
+
+- Create and Deploy Cluster
+```
+ansible-playbook deploy-k8s-cluster.yml -i inventory.yml --extra-vars cluster_state=present
+```
+Once the command runs go to `http://<YOUR INGRESS IP>.sslip.io`
+
+#### Deploy with Ansible
+
+- Build and Push Docker Containers to GCR
 ```
 ansible-playbook deploy-docker-images.yml -i inventory.yml
 ```
@@ -159,7 +183,7 @@ Install and setup all the required things for deployment.
 ansible-playbook deploy-provision-instance.yml -i inventory.yml
 ```
 
-- Setup Docker Containers in the  Compute Instance
+- Setup Docker Containers in the Compute Instance
 ```
 ansible-playbook deploy-setup-containers.yml -i inventory.yml
 ```
@@ -168,6 +192,6 @@ ansible-playbook deploy-setup-containers.yml -i inventory.yml
 ```
 ansible-playbook deploy-setup-webserver.yml -i inventory.yml
 ```
-Once the command runs go to `http://<External IP>/` 
+Once the command runs go to `http://<External IP>` 
 
 ---
