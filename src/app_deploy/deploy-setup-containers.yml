@@ -62,7 +62,7 @@
         image: "gcr.io/{{ gcp_project }}/science-tutor-api-service:{{ tag.stdout}}"
         state: started
         device_requests:
-            driver: nvidia
+          - driver: nvidia
             count: -1  # we want all
             capabilities:
               - - gpu
