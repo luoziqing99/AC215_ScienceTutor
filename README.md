@@ -141,13 +141,7 @@ docker run --gpus all -p 5000:5000 -t backend
 ```
 
 There is a `/chat` endpoint with `POST` method.
-You can interact with the endpoint through `http://localhost:5000/chat`
-
-
-<img width="1362" src="pictures/apidoc.png">
-
-It is advised to use postman to test the API.
-<img width="1362" src="pictures/postman.png">
+You can interact with the endpoint through `http://127.0.0.1:5000/chat`
 
 ### Frontend Container
 
