@@ -17,6 +17,7 @@ all:
       machine_disk_size: 100
       gcp_accelerator_count: 1
       gcp_accelerator_type: "projects/ac215project-398401/zones/us-west3-b/acceleratorTypes/nvidia-tesla-t4"
+      k8s_accelerator_type: "nvidia-tesla-t4"
 
     children:
         appserver:

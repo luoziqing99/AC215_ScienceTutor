@@ -5,7 +5,7 @@
 
   vars:
     cluster_name: "science-tutor-cluster"
-    machine_type: "n1-highmem-4"
+    machine_type: "n1-standard-4"
     machine_disk_size: 100
     initial_node_count: 1
 
@@ -33,6 +33,9 @@
       location: "{{ gcp_zone }}"
       project: "{{ gcp_project }}"
       config:
+        accelerators:
+          - accelerator_count: 1
+            accelerator_type: "{{ k8s_accelerator_type }}"
         machine_type: "{{ machine_type }}"
         image_type: "cos_containerd"
         disk_size_gb: "{{ machine_disk_size }}"
@@ -131,6 +134,13 @@
       var: create_secret_op
     when: cluster_state == "present"
 
+  - name: "Install nvidia gpu driver"
+    shell: |
+      #!/bin/bash
+      kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/master/nvidia-driver-installer/cos/daemonset-preloaded.yaml
+    register: install_nvidia
+    when: cluster_state == "present"
+
   - name: "Create Deployment for Frontend"
     k8s:
       state: present
@@ -150,7 +160,7 @@
                 run: frontend
             spec:
               containers:
-              - image: "gcr.io/{{ gcp_project }}/mushroom-app-frontend-react:{{ tag.stdout}}"
+              - image: "gcr.io/{{ gcp_project }}/science-tutor-frontend-react:{{ tag.stdout}}"
                 imagePullPolicy: IfNotPresent
                 name: frontend
                 ports:
@@ -185,11 +195,11 @@
                   secret:
                     secretName: gcp-service-key
               containers:
-              - image: gcr.io/{{ gcp_project }}/mushroom-app-api-service:{{ tag.stdout}}
+              - image: gcr.io/{{ gcp_project }}/science-tutor-api-service:{{ tag.stdout}}
                 imagePullPolicy: IfNotPresent
                 name: api
                 ports:
-                - containerPort: 9000
+                - containerPort: 5000
                   protocol: TCP
                 volumeMounts:
                   - name: persistent-vol
@@ -201,7 +211,14 @@
                   - name: GOOGLE_APPLICATION_CREDENTIALS
                     value: /secrets/gcp-service.json
                   - name: GCS_BUCKET_NAME
-                    value: mushroom-app-models
+                    value: ac215-sciencetutor
+                resources:
+                  limits:
+                    nvidia.com/gpu: 1
+              tolerations:
+                - key: nvidia.com/gpu
+                  operator: Exists
+                  effect: NoSchedule
     when: cluster_state == "present"
 
   - name: "Create Service for Frontend"
@@ -234,9 +251,9 @@
           namespace: "{{cluster_name}}-namespace"
         spec:
           ports:
-          - port: 9000
+          - port: 5000
             protocol: TCP
-            targetPort: 9000
+            targetPort: 5000
           selector:
             run: api
           type: NodePort
@@ -299,5 +316,5 @@
                   service:
                     name: api
                     port:
-                      number: 9000
+                      number: 5000
     when: cluster_state == "present"

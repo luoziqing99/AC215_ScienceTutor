@@ -83,8 +83,8 @@ function App() {
     setImage(null);
 
     console.log("Trying to send", chats, formData)
-    // fetch("http://127.0.0.1:5000/chat", {
-    fetch("http://34.125.158.148:5000/chat", {
+    fetch("http://127.0.0.1:5000/chat", {
+    // fetch("http://34.125.158.148:5000/chat", {
       "method": "POST",
       body: formData
     })
