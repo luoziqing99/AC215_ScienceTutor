@@ -95,7 +95,13 @@ We built a Solution Architecture abd Technical Architecture to ensure all our co
 <img width="1362" alt="image" src="pictures/technical_architecture.png">
 
 ### Backend API
+We built backend api service using Flask to expose model functionality to the frontend. 
 
+We provide a `/chat` endpoint with `POST` method. You can check `/apidocs` for Swagger UI API docs.
+<img width="1362" src="pictures/apidoc.png">
+
+We also used postman to test the API.
+<img width="1362" src="pictures/postman.png">
 
 ### Frontend
 
@@ -134,7 +140,9 @@ docker build . -t backend
 docker run --gpus all -p 5000:5000 -t backend
 ```
 
-Currently there is a `/chat` endpoint with `POST` method. You can check `/apidocs` for Swagger UI API docs.
+There is a `/chat` endpoint with `POST` method.
+You can interact with the endpoint through `http://localhost:5000/chat`
+
 
 <img width="1362" src="pictures/apidoc.png">
 
