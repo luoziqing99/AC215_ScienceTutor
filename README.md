@@ -1,6 +1,7 @@
 # AC215 - ScienceTutor
 
 ## Project Organization
+```
 .
 ├── LICENSE
 ├── README.md
@@ -124,6 +125,7 @@
         ├── trainer-yp.tar.gz
         ├── upload_model_to_gcs.py
         └── upload_trainer_to_gcs.py
+```
 
 ## AC215 - Milestone5 - ScienceTutor
 
