@@ -183,6 +183,7 @@ The following are the folders from the previous milestones:
 ### API Service Container
 
 This container has the python file `api/model_backend.py` to run and expose the backend apis.
+
 To run the container locally:
 * Open a terminal and go to the location where `src/api-service`
 * Run `sh docker-shell.sh`
