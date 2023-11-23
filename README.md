@@ -181,20 +181,15 @@ The following are the folders from the previous milestones:
 ```
 
 ### API Service Container
-In `src/api-service/api` directory, you can launch the backend server by running `python model_backend.py`. It will start a flask server at `http://localhost:5000/`. It will serve as the backend for our web UI.
-We also provide Dockerfile for the backend server, and you can build it via the following commands in the `src/api-service` directory:
-```shell
-# build docker
-docker build . -t backend
 
-# use all your GPUs 
-# it will hang, until you manually terminate the container
-# access the backend endpoint at http://localhost:5000/chat
-docker run --gpus all -p 5000:5000 -t backend
-```
+This container has the python file `api/model_backend.py` to run and expose the backend apis.
+To run the container locally:
+* Open a terminal and go to the location where `src/api-service`
+* Run `sh docker-shell.sh`
+* The backend server is launched at `http://localhost:5000/`
 
-There is a `/chat` endpoint with `POST` method.
-You can interact with the endpoint through `http://127.0.0.1:5000/chat`
+We deployed a `/chat` endpoint with `POST` method.
+We can interact with the endpoint through `http://127.0.0.1:5000/chat`
 
 ### Frontend Container
 This container contains all the files to develop and build a react app. There are dockerfiles for both development and production. 
