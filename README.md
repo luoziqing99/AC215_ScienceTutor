@@ -187,10 +187,9 @@ This container has the python file `api/model_backend.py` to run and expose the 
 To run the container locally:
 * Open a terminal and go to the location where `src/api-service`
 * Run `sh docker-shell.sh`
-* The backend server is launched at `http://localhost:5000/`
-
-We deployed a `/chat` endpoint with `POST` method.
-We can interact with the endpoint through `http://127.0.0.1:5000/chat`
+* The backend server is launched at `http://localhost:5000/` and `http://127.0.0.1:5000`
+* Go to `http://127.0.0.1:5000/chat` to interact with the endpoint
+* Go to `http://127.0.0.1:5000/apidocs` to view the APIs
 
 ### Frontend Container
 This container contains all the files to develop and build a react app. There are dockerfiles for both development and production. 
