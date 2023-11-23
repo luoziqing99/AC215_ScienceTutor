@@ -71,12 +71,9 @@
     │   ├── package-lock.json
     │   ├── package.json
     │   ├── public
-    │   │   ├── loader.gif
     │   │   ├── send.png
     │   │   ├── student.png
-    │   │   ├── student2.png
     │   │   ├── teacher.png
-    │   │   └── upload.png
     │   ├── src
     │   │   ├── App.css
     │   │   ├── App.jsx
