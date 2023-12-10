@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Configuration, OpenAIApi } from "openai";
 
-const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
-const APP_VERSION = 1.1;
+const APP_VERSION = 1.0;
 
 // Reference: https://github.com/EBEREGIT/react-chatgpt-tutorial
 
@@ -86,8 +85,7 @@ function App() {
     setImage(null);
 
     console.log("Trying to send", chats, formData)
-    fetch(BASE_API_URL + "/chat", {
-    // fetch("http://127.0.0.1:5000/chat", {
+    fetch("http://127.0.0.1:5000/chat", {
     // fetch("http://34.125.158.148:5000/chat", {
       "method": "POST",
       body: formData
@@ -119,6 +117,7 @@ function App() {
 
       <main className="main-container">
         <h1>ScienceTutor</h1>
+        <h4>version {APP_VERSION}</h4>
 
         <section>
           {chats && chats.length
