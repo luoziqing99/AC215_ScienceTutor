@@ -115,8 +115,15 @@ class ChatView(SwaggerView):
 app = Flask(__name__)
 
 swagger = Swagger(app)
-
 app.add_url_rule('/chat', view_func=ChatView.as_view('chat'), methods=['POST'])
+
+# @app.route('/status', methods=['GET'])
+# def get_api_status():
+#     return jsonify({
+#         "version": "1.0",
+#         "torch_version": torch.__version__
+#     })
+
 CORS(app)
 
 # Run the Flask app
