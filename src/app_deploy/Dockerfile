@@ -3,6 +3,9 @@ FROM ubuntu:20.04
 
 # Set the environment variable for non-interactive installations
 ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8
+ENV PYENV_SHELL=/bin/bash
+ENV PYTHONUNBUFFERED=1
 
 # Install required dependencies
 RUN apt-get update && \
@@ -32,7 +35,7 @@ RUN curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | gpg --d
     curl https://baltocdn.com/helm/signing.asc | apt-key add -&& \
     echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list && \
     apt-get update && \
-    apt-get install -y --no-install-recommends kubectl helm python3 python3-pip && \
+    apt-get install -y --no-install-recommends kubectl helm python3.9 python3-pip && \
     pip install openshift ansible docker apache-libcloud
 
 RUN useradd -ms /bin/bash app -d /home/app -u 1000 -p "$(openssl passwd -1 passw0rd)" && \
