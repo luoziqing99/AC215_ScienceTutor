@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Configuration, OpenAIApi } from "openai";
 
-const APP_VERSION = "1.0";
+const APP_VERSION = "1.2";
 
 // Reference: https://github.com/EBEREGIT/react-chatgpt-tutorial
 
@@ -85,8 +85,8 @@ function App() {
     setImage(null);
 
     console.log("Trying to send", chats, formData)
-    fetch("http://127.0.0.1:5000/chat", {
-    // fetch("http://34.125.158.148:5000/chat", {
+    fetch("/api/chat", { // for nginx
+    // fetch("http://127.0.0.1:5000/chat", { // for Docker.dev
       "method": "POST",
       body: formData
     })
