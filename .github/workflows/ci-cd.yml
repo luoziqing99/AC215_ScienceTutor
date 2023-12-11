@@ -36,7 +36,7 @@ jobs:
       - name: Run Deploy App
         if: contains(github.event.head_commit.message, '/run-deploy-app')
         run: |-
-          docker run --name app_deployment \
+          docker run --rm --name app_deployment \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v $HOME/.ssh:/home/app/.ssh \
             -v ${{ github.workspace }}/src/frontend:/frontend-react \
@@ -48,6 +48,4 @@ jobs:
             -e GCP_PROJECT=ac215project-398401 \
             -e GCP_ZONE=us-west3-b \
             app_deployment sh deploy-app.sh
-          docker ps
-          docker exec app_deployment /bin/bash -c 'sh deploy-app.sh'
       - run: echo "Job's status is ${{ job.status }}."

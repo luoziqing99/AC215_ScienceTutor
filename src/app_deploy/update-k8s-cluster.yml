@@ -51,32 +51,32 @@
                   protocol: TCP
               restartPolicy: Always
   
-  - name: "Update Deployment for API Service"
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Deployment
-        metadata:
-          name: api
-          namespace: "{{cluster_name}}-namespace"
-        spec:
-          selector:
-            matchLabels:
-              run: api
-          template:
-            metadata:
-              labels:
-                run: api
-            spec:
-              volumes:
-                - name: persistent-vol
-                  emptyDir: {}
-                - name: google-cloud-key
-                  secret:
-                    secretName: gcp-service-key
-              containers:
-              - image: gcr.io/{{ gcp_project }}/science-tutor-api-service:{{ tag.stdout}}
-                imagePullPolicy: IfNotPresent
-                name: api
-              restartPolicy: Always
+  # - name: "Update Deployment for API Service"
+  #   k8s:
+  #     state: present
+  #     definition:
+  #       apiVersion: v1
+  #       kind: Deployment
+  #       metadata:
+  #         name: api
+  #         namespace: "{{cluster_name}}-namespace"
+  #       spec:
+  #         selector:
+  #           matchLabels:
+  #             run: api
+  #         template:
+  #           metadata:
+  #             labels:
+  #               run: api
+  #           spec:
+  #             volumes:
+  #               - name: persistent-vol
+  #                 emptyDir: {}
+  #               - name: google-cloud-key
+  #                 secret:
+  #                   secretName: gcp-service-key
+  #             containers:
+  #             - image: gcr.io/{{ gcp_project }}/science-tutor-api-service:{{ tag.stdout}}
+  #               imagePullPolicy: IfNotPresent
+  #               name: api
+  #             restartPolicy: Always
