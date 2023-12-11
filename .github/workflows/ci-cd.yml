@@ -52,7 +52,7 @@ jobs:
       - name: Run Data Processor
         if: contains(github.event.head_commit.message, '/run-data-processor')
         run: |-
-          docker run --rm --name mushroom-app-deployment \
+          docker run --rm --name app-deployment \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v ${{ github.workspace }}/src/frontend:/frontend-react \
             -v ${{ github.workspace }}/src/api-service:/api-service \
