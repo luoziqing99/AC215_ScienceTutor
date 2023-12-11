@@ -49,3 +49,40 @@ jobs:
             -e GCP_ZONE=us-west3-b \
             app_deployment ./deploy-app.sh
       - run: echo "Job's status is ${{ job.status }}."
+      - name: Run Data Processor
+        if: contains(github.event.head_commit.message, '/run-data-processor')
+        run: |-
+          docker run --rm --name mushroom-app-deployment \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v ${{ github.workspace }}/src/frontend:/frontend-react \
+            -v ${{ github.workspace }}/src/api-service:/api-service \
+            -v ${{ github.workspace }}/src/data_processing:/data-processor \
+            --mount type=bind,source=$GOOGLE_APPLICATION_CREDENTIALS,target=/secrets/deployment.json \
+            -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/deployment.json \
+            -e USE_GKE_GCLOUD_AUTH_PLUGIN=True \
+            -e GCP_PROJECT=ac215project-398401 \
+            -e GCP_ZONE=us-central1-a \
+            -e GCS_BUCKET_NAME=sciencetutor-app-models-demo2 \
+            -e GCS_SERVICE_ACCOUNT=ml-workflow@ac215project-398401.iam.gserviceaccount.com \
+            -e GCP_REGION=us-central1 \
+            -e GCS_PACKAGE_URI=gs://ac215-sciencetutor-trainer2 \
+            app_deployment sh run-data-processor.sh
+      - name: Run ML Pipeline
+        if: contains(github.event.head_commit.message, '/run-ml-pipeline')
+        run: |-
+          docker run --rm --name app-deployment \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v ${{ github.workspace }}/src/frontend:/frontend-react \
+            -v ${{ github.workspace }}/src/api-service:/api-service \
+            -v ${{ github.workspace }}/src/data_processing:/data-processor \
+            --mount type=bind,source=$GOOGLE_APPLICATION_CREDENTIALS,target=/secrets/deployment.json \
+            -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/deployment.json \
+            -e USE_GKE_GCLOUD_AUTH_PLUGIN=True \
+            -e GCP_PROJECT=ac215project-398401 \
+            -e GCP_ZONE=us-central1-a \
+            -e GCS_BUCKET_NAME=sciencetutor-app-models-demo2 \
+            -e GCS_SERVICE_ACCOUNT=ml-workflow@ac215project-398401.iam.gserviceaccount.com \
+            -e GCP_REGION=us-central1 \
+            -e GCS_PACKAGE_URI=gs://ac215-sciencetutor-trainer2 \
+            app-deployment sh run-ml-pipeline.sh
+      - run: echo "Job's status is ${{ job.status }}."
