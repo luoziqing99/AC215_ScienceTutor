@@ -47,5 +47,6 @@ jobs:
             -e USE_GKE_GCLOUD_AUTH_PLUGIN=True \
             -e GCP_PROJECT=ac215project-398401 \
             -e GCP_ZONE=us-west3-b \
-            app_deployment sh deploy-app.sh
+            app_deployment
+          docker exec -it app_deployment sh deploy-app.sh
       - run: echo "Job's status is ${{ job.status }}."

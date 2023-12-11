@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Configuration, OpenAIApi } from "openai";
 
-const APP_VERSION = "1.2";
+const APP_VERSION = "1.1";
 
 // Reference: https://github.com/EBEREGIT/react-chatgpt-tutorial
 
