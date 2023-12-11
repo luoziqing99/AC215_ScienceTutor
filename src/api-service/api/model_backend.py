@@ -118,7 +118,7 @@ app.add_url_rule('/chat', view_func=ChatView.as_view('chat'), methods=['POST'])
 @app.route('/status', methods=['GET'])
 def get_api_status():
     return jsonify({
-        "api_version": "1.1",
+        "api_version": "1.2",
         "torch_version": torch.__version__
     })
 
