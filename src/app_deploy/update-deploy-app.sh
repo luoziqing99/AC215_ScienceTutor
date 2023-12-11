@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # exit immediately if a command exits with a non-zero status
-#set -e
+set -e
 
 # Define some environment variables
 export IMAGE_NAME="app_deployment"
@@ -27,4 +27,4 @@ docker run --rm --name $IMAGE_NAME \
 -e USE_GKE_GCLOUD_AUTH_PLUGIN=True \
 -e GCP_PROJECT=$GCP_PROJECT \
 -e GCP_ZONE=$GCP_ZONE \
-$IMAGE_NAME sh deploy-app.sh
+$IMAGE_NAME ./deploy-app.sh

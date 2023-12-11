@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # exit immediately if a command exits with a non-zero status
-#set -e
+set -e
 
 # Define some environment variables
 export IMAGE_NAME="app_deployment"
