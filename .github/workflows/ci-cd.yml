@@ -31,21 +31,21 @@ jobs:
           ls ${{ github.workspace }}
       - name: Build App Deploy Container 
         run: |-
-          cd ${{ github.workspace }}/src/deployment/
-          docker build -t app-deployment -f Dockerfile .
+          cd ${{ github.workspace }}/src/app_deploy/
+          docker build -t app_deployment --platform=linux/amd64 -f Dockerfile .
       - name: Run Deploy App
         if: contains(github.event.head_commit.message, '/run-deploy-app')
         run: |-
-          docker run --rm --name app-deployment \
+          docker run --rm --name app_deployment \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v $HOME/.ssh:/home/app/.ssh \
-            -v ${{ github.workspace }}/src/frontend-react:/frontend-react \
+            -v ${{ github.workspace }}/src/frontend:/frontend-react \
             -v ${{ github.workspace }}/src/api-service:/api-service \
             --volume $GITHUB_WORKSPACE:/workspace \
             --mount type=bind,source=$GOOGLE_APPLICATION_CREDENTIALS,target=/secrets/deployment.json \
             --env GOOGLE_APPLICATION_CREDENTIALS=/secrets/deployment.json \
             -e USE_GKE_GCLOUD_AUTH_PLUGIN=True \
-            -e GCP_PROJECT=ac215-project \
-            -e GCP_ZONE=us-central1-a \
-            app-deployment sh deploy-app.sh
+            -e GCP_PROJECT=ac215project-398401 \
+            -e GCP_ZONE=us-west3-b \
+            app_deployment sh deploy-app.sh
       - run: echo "Job's status is ${{ job.status }}."
