@@ -1,17 +1,30 @@
-# AC215 - ScienceTutor
+# AC215 - ScienceTutor: An Educational Application For Children
+
+### Presentation Video
+* [Link to Presentation:](https://drive.google.com/file/d/1y41Zua5000fInmUBlQKhANr39Wn5bQJf/view?usp=sharing)
+
+### Blog Post Link
+* [Link to Medium Blog:](https://medium.com/@lsjnancy/94a5af6b1b74)
+
+------------
 
 ## Project Organization
 ```
 .
+├── .github
+│   └── workflows
+|       └── ci-cd.yml
 ├── LICENSE
 ├── README.md
 ├── notebooks
 │   └── AC215_milestone3_model_training.ipynb
 ├── pictures
 │   ├── apidoc.png
+│   ├── chatbot-v2.png
 │   ├── chatbot.png
 │   ├── compute_engine.png
 │   ├── gcs_model_bucket.png
+│   ├── k8s-v2.png
 │   ├── k8s.png
 │   ├── ml_workflow.png
 │   ├── ml_workflow_pipeline_run.png
@@ -25,21 +38,24 @@
 │   ├── wandb_train.png
 │   └── web_server_demo.png
 ├── presentations
+│   ├── AC215-final-presentation.mp4
+│   ├── AC215-final-presentation.pdf
 │   ├── AC215-midterm-demo.mp4
 │   └── AC215-midterm.pdf
 ├── references
 ├── reports
 │   ├── milestone2.md
 │   ├── milestone3.md
-│   └── milestone4.md
+│   ├── milestone4.md
+│   └── milestone5.md
 └── src
-    ├── api-service
+    ├── api-service                 <-- Code for app backend APIs
     │   ├── Dockerfile
     │   ├── api
     │   │   └── model_backend.py
     │   ├── docker-shell.sh
     │   └── requirements.txt
-    ├── app_deploy
+    ├── app_deploy                  <-- Code for app deployment to GCP
     │   ├── Dockerfile
     │   ├── deploy-create-instance.yml
     │   ├── deploy-docker-images.yml
@@ -47,13 +63,18 @@
     │   ├── deploy-provision-instance.yml
     │   ├── deploy-setup-containers.yml
     │   ├── deploy-setup-webserver.yml
+    │   ├── update-k8s-cluster.yml
+    │   ├── deploy-app-init.sh
+    │   ├── deploy-app.sh
     │   ├── docker-entrypoint.sh
     │   ├── docker-shell.sh
+    │   ├── update-deploy-app.sh
     │   ├── inventory.yml
+    │   ├── inventory-prod.yml
     │   └── nginx-conf
     │       └── nginx
     │           └── nginx.conf
-    ├── data_processing
+    ├── data_processing             <-- Code for data processing
     │   ├── Dockerfile
     │   ├── ScienceQA-LLAVA.dvc
     │   ├── convert_scienceqa_to_llava.py
@@ -62,7 +83,7 @@
     │   ├── upload_to_gcs.py
     │   ├── upload_to_hf.py
     │   └── utils.py
-    ├── frontend
+    ├── frontend                    <-- Code for app frontend
     │   ├── Dockerfile
     │   ├── Dockerfile.dev
     │   ├── docker-shell.sh
@@ -80,7 +101,7 @@
     │   │   ├── index.css
     │   │   └── main.jsx
     │   └── vite.config.js
-    ├── ml_workflow
+    ├── ml_workflow                 <-- Scripts for automating data processing and modeling
     │   ├── Dockerfile
     │   ├── Pipfile
     │   ├── Pipfile.lock
@@ -88,20 +109,19 @@
     │   ├── docker-entrypoint.sh
     │   ├── docker-shell.sh
     │   ├── model.py
-    │   ├── model_deploy.yaml
     │   ├── model_training.yaml
     │   └── pipeline.yaml
-    ├── model_deploy
+    ├── model_deploy                <-- Model deployment
     │   ├── Dockerfile
     │   ├── api_example
     │   │   ├── req.json
     │   │   └── websocket_streaming.py
     │   ├── docker-shell.sh
     │   └── failed_vertex_ai_script.py
-    ├── model_inference
+    ├── model_inference             <-- Model inference
     │   ├── compute_metric.py
     │   └── model_vqa_science.py
-    └── model_training
+    └── model_training              <-- Model training
         ├── Dockerfile
         ├── Pipfile
         ├── Pipfile.lock
@@ -123,50 +143,54 @@
         ├── upload_model_to_gcs.py
         └── upload_trainer_to_gcs.py
 ```
+------------
 
-## AC215 - Milestone5 - ScienceTutor
+## AC215 - Final Project
 
 **Team Members** Sijia (Nancy) Li, Ziqing Luo, Yuqing Pan, Jiashu Xu, Xiaohan Zhao
 
 **Group Name** Science Tutor
 
-**Project** In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
+**Project - Problem Definition** In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
 
-### Milestone5
+### Data Description
+We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public dataset that consists of ~21k multimodal multiple choice questions covering a diverse set of science topics. The dataset is available at [Hugging Face](https://huggingface.co/datasets/derek-thomas/ScienceQA). 
+
+
 After completions of building a robust ML Pipeline in our previous milestone we have built a backend api service using Flask and a frontend web app using React. 
 This will be our user-facing application that ties together the various components built in previous milestones.
 
-## Application Design
+### Proposed Solution
 Before we start implementing the app we built a detailed design document outlining the application’s architecture. 
 We built a Solution Architecture abd Technical Architecture to ensure all our components work together.
 
 ### Solution Architecture
-<img width="1362" alt="image" src="pictures/solution_architecture.png">
+<img width="1362" alt="image" src="../pictures/solution_architecture.png">
 
 ### Technical Architecture
-<img width="1362" alt="image" src="pictures/technical_architecture.png">
+<img width="1362" alt="image" src="../pictures/technical_architecture.png">
 
 ### Backend API
 We built backend api service using Flask to expose model functionality to the frontend. 
 
 We provide a `/chat` endpoint with `POST` method. You can check `/apidocs` for Swagger UI API docs.
-<img width="1362" src="pictures/apidoc.png">
+<img width="1362" src="../pictures/apidoc.png">
 
 We also used postman to test the API.
-<img width="1362" src="pictures/postman.png">
+<img width="1362" src="../pictures/postman.png">
 
 ### Frontend
 A user friendly React app was built to interact with the Science Tutor chatbot in the web browser using the Llava-7b model finetuned on ScienceQA. Using the app, a user can type a question and upload an image, and then send the messages to the chatbot. The app will send the text and image (if an image is uploaded) to the backend api to get the model's output on what the answer will be to the given question (and image). Once the app gets the response from the backend api, the app will then reply to the user in the chat. 
 
 Here is a screenshot of our app:
-<img width="1362" alt="image" src="pictures/chatbot.png">
+<img width="1362" alt="image" src="../pictures/chatbot.png">
 
 
 ### Deployment
 We used Ansible and Kubernetes to create, provision, and deploy our frontend and backend to GCP in an automated fashion.
 
 We successfully created the Kubernetes cluster for our app in GCP:
-<img width="1362" alt="image" src="pictures/k8s.png">
+<img width="1362" alt="image" src="../pictures/k8s.png">
 
 
 ## Code Structure
