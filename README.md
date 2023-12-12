@@ -1,10 +1,10 @@
 # AC215 - ScienceTutor: An Educational Application For Children
 
 ### Presentation Video
-* [Link to Presentation:](https://drive.google.com/file/d/1y41Zua5000fInmUBlQKhANr39Wn5bQJf/view?usp=sharing)
+* [https://drive.google.com/file/d/1y41Zua5000fInmUBlQKhANr39Wn5bQJf/view?usp=sharing]
 
 ### Blog Post Link
-* [Link to Medium Blog:](https://medium.com/@lsjnancy/94a5af6b1b74)
+* [https://medium.com/@lsjnancy/94a5af6b1b74]
 
 ------------
 
