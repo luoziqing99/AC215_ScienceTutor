@@ -31,6 +31,8 @@
 │   ├── postman.png
 │   ├── science_tutor_app_pipeline.png
 │   ├── science_tutor_app_pipeline2.png
+│   ├── ScienceQA1.png
+│   ├── ScienceQA2.png
 │   ├── solution_architecture.png
 │   ├── technical_architecture.png
 │   ├── vertex_ai_model_training.png
@@ -43,6 +45,10 @@
 │   ├── AC215-midterm-demo.mp4
 │   └── AC215-midterm.pdf
 ├── references
+│   ├── Learn to Explain-Multimodal Reasoning via ThoughtChainsforScienceQuestion Answering.pdf
+│   ├── Visual Instruction Tuning.pdf
+│   ├── Visual_Questions_Answering_Developments_Applications_Datasets_and_Opportunities_A_State-of-the-Art_Survey.pdf
+│   └── VQA-Visual Question Answering.pdf
 ├── reports
 │   ├── milestone2.md
 │   ├── milestone3.md
@@ -154,47 +160,58 @@
 **Project - Problem Definition** In this project we aim to develop an educational application that provides instant and expert answers to science questions that children have in different domains such as natural, social and language science.
 
 ### Data Description
-We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public dataset that consists of ~21k multimodal multiple choice questions covering a diverse set of science topics. The dataset is available at [Hugging Face](https://huggingface.co/datasets/derek-thomas/ScienceQA). 
+------------
+We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public dataset that consists of ~21k multimodal multiple choice questions covering a diverse set of science topics (3 subjects, 26 topics, 127 categories, and 379 skills), as shown below. The dataset is available at [Hugging Face](https://huggingface.co/datasets/derek-thomas/ScienceQA). 
 
+#### Visual Question Answering:
+<img width="1362" alt="image" src="pictures/ScienceQA1.png">
 
-After completions of building a robust ML Pipeline in our previous milestone we have built a backend api service using Flask and a frontend web app using React. 
-This will be our user-facing application that ties together the various components built in previous milestones.
+#### ScienceQA Topics:
+<img width="1362" alt="image" src="pictures/ScienceQA2.png">
+
+We train on the training subset of the ScienceQA, which consists of 12,726 training instances. After training on the dataset, we evaluate our model on the 4,241 test set. To ease development, we have also preprocessed and uploaded the reformatted dataset (LLaVA format) to:
+* Hugging Face: [cnut1648/ScienceQA-LLAVA](https://huggingface.co/datasets/cnut1648/ScienceQA-LLAVA/)
+* GCS: gs://ac215-sciencetutor/ScienceQA-LLAVA
+
+In addition, ScienceQA contains the following data attributes:
+* **Question (and optionally image)** contains the actual science-related question
+* **Choices** are the possible choices
+* **Answer** is the integer index of the ground truth choice
+* **Subject, topic, category** contains the domain of the question
+* **Lecture** contains the context in which the question appears. We do not end up using this column because in practice, users might not give such detailed information. Our design goal is to train a model that can solve the question without accessing this information.
+
+We use DVC to version control two versions of the ScienceQA dataset, one for the original version which is multi-choice, another for the reformatted version where multi-choice is formatted as prompts and responses. 
+
 
 ### Proposed Solution
-Before we start implementing the app we built a detailed design document outlining the application’s architecture. 
-We built a Solution Architecture abd Technical Architecture to ensure all our components work together.
+------------
+After completions of building a robust ML Pipeline in our previous milestone, we have built a back-end api service using Flask and a front-end web app using React. This will be our user-facing application that ties together the various components built in previous milestones.
 
-### Solution Architecture
-<img width="1362" alt="image" src="../pictures/solution_architecture.png">
+Here are our Solution Architecture and Technical Architecture to ensure all our components work together.
 
-### Technical Architecture
-<img width="1362" alt="image" src="../pictures/technical_architecture.png">
+#### Solution Architecture
+<img width="1362" alt="image" src="pictures/solution_architecture.png">
 
-### Backend API
-We built backend api service using Flask to expose model functionality to the frontend. 
+#### Technical Architecture
+<img width="1362" alt="image" src="pictures/technical_architecture.png">
 
-We provide a `/chat` endpoint with `POST` method. You can check `/apidocs` for Swagger UI API docs.
-<img width="1362" src="../pictures/apidoc.png">
-
-We also used postman to test the API.
-<img width="1362" src="../pictures/postman.png">
-
-### Frontend
-A user friendly React app was built to interact with the Science Tutor chatbot in the web browser using the Llava-7b model finetuned on ScienceQA. Using the app, a user can type a question and upload an image, and then send the messages to the chatbot. The app will send the text and image (if an image is uploaded) to the backend api to get the model's output on what the answer will be to the given question (and image). Once the app gets the response from the backend api, the app will then reply to the user in the chat. 
+#### ScienceTutor App
+A user friendly React app was built to interact with the Science Tutor chatbot in the web browser using the LLaVA-7b model finetuned on ScienceQA. Using the app, a user can type a question and upload an image, and then send the messages to the chatbot. The app will send the text and image (if an image is uploaded) to the backend api to get the model's output on what the answer will be to the given question (and image). Once the app gets the response from the backend api, the app will then reply to the user in the chat. 
 
 Here is a screenshot of our app:
-<img width="1362" alt="image" src="../pictures/chatbot.png">
+<img width="1362" alt="image" src="pictures/chatbot-v2.png">
 
 
-### Deployment
-We used Ansible and Kubernetes to create, provision, and deploy our frontend and backend to GCP in an automated fashion.
+#### Kubernetes Deployment
+We deployed our frontend and backend to a kubernetes cluster to take care of load balancing and failover. We used ansible scripts to manage creating and updating the k8s cluster. Ansible helps us manage infrastructure as code and this is very useful to keep track of our app infrastructure as code in GitHub. It helps use setup deployments in a very automated way.
 
-We successfully created the Kubernetes cluster for our app in GCP:
-<img width="1362" alt="image" src="../pictures/k8s.png">
+Here is our deployed app on a K8s cluster in GCP:
+
+<img width="1362" alt="image" src="pictures/k8s-v2.png">
 
 
-## Code Structure
-
+### Code Structure
+------------
 The following are the folders from the previous milestones:
 ```
 - data_processing
@@ -202,9 +219,12 @@ The following are the folders from the previous milestones:
 - model_inference
 - model_deploy
 - ml_workflow
+- api-service
+- frontend
+- app_deploy
 ```
 
-### API Service Container
+#### API Service Container
 
 This container has the python file `api/model_backend.py` to run and expose the backend apis.
 
@@ -215,7 +235,7 @@ To run the container locally:
 * Go to `http://127.0.0.1:5000/chat` to interact with the endpoint
 * Go to `http://127.0.0.1:5000/apidocs` to view the APIs
 
-### Frontend Container
+#### Frontend Container
 This container contains all the files to develop and build a react app. There are dockerfiles for both development and production. 
 
 To run the container locally:
@@ -225,16 +245,16 @@ To run the container locally:
 * Once `npm` is installed, run `npm start`
 * Go to `http://localhost:8080` to access the app locally
 
-### Deployment Container
+#### Deployment Container
 This container helps manage building and deploying all our app containers. This can be achieved with Ansible, with or without Kubernetes.
 
 To run the container locally:
 * Open a terminal and go to the location `AC215_ScienceTutor/src/app_deploy`
 * Run `sh docker-shell.sh`
 
-#### Deploy with Ansible and Kubernetes
+**1) Deploy with Ansible and Kubernetes**
 
-* Build and Push Docker Containers to GCR
+* Build and Push Docker Containers to GCR (Google Container Registry)
 ```
 ansible-playbook deploy-docker-images.yml -i inventory.yml
 ```
@@ -245,7 +265,7 @@ ansible-playbook deploy-k8s-cluster.yml -i inventory.yml --extra-vars cluster_st
 ```
 Once the command runs go to `http://<YOUR INGRESS IP>.sslip.io`
 
-#### Deploy with Ansible
+**2) Deploy with Ansible**
 
 * Build and Push Docker Containers to GCR
 ```
@@ -273,5 +293,13 @@ ansible-playbook deploy-setup-containers.yml -i inventory.yml
 ansible-playbook deploy-setup-webserver.yml -i inventory.yml
 ```
 Once the command runs go to `http://<External IP>` 
+
+#### Deploy with GitHub Actions
+Finally, we added CI/CD using GitHub Actions, such that we can trigger deployment or any other pipeline using GitHub Events. Our CI/CD yaml file can be found under .github/workflows. 
+
+```ci-cd.yml```:
+We implemented a CI/CD workflow to use the deployment container to:
+* Invoke docker image building and pushing to GCR on code changes
+* Deploy the changed containers to update the k8s cluster
 
 ---
