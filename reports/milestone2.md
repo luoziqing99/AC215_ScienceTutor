@@ -11,7 +11,7 @@ In this project we aim to develop an educational application that provides insta
 
 The app pipeline flow is as shown:
 
-<img src="pictures/science_tutor_app_pipeline.png"  width="600">
+<img src="../pictures/science_tutor_app_pipeline.png"  width="600">
 
 ## Project Organization
 

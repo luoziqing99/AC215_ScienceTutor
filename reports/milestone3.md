@@ -2,7 +2,7 @@
 
 ## Application Pipeline Flow
 
-<img width="1362" alt="image" src="pictures/science_tutor_app_pipeline.png">
+<img width="1362" alt="image" src="../pictures/science_tutor_app_pipeline.png">
 
 ## Project Organization
       .
@@ -84,10 +84,10 @@ V100 unfortunately does not support bf16. We tried fp16 but due to Huggingface i
 The images below show the training output from our Weights & Biases Page. The Weights & Biases Page tracks our model training process. This is done by using the `wandb` library that we included in our `task.py` Python script.
 
 Train Tracking:
-<img width="1362" alt="image" src="pictures/wandb_train.png">
+<img width="1362" alt="image" src="../pictures/wandb_train.png">
 
 System Tracking:
-<img width="1362" alt="image" src="pictures/wandb_system.png">
+<img width="1362" alt="image" src="../pictures/wandb_system.png">
 
 ## Serverless Training
 
@@ -102,10 +102,10 @@ sh cli.sh
 ```
 
 Google Cloud Storage Bucket with our training code stored in `trainer.tar.gz`:
-<img width="1362" alt="image" src="pictures/gcs_model_bucket.png">
+<img width="1362" alt="image" src="../pictures/gcs_model_bucket.png">
 
 Vertex AI showing our attempts for model training (currently we are still restricted by Vertex AI's GPU quota and cannot load our model into memory):
-<img width="1362" alt="image" src="pictures/vertex_ai_model_training.png">
+<img width="1362" alt="image" src="../pictures/vertex_ai_model_training.png">
 
 
 ## Code Structure

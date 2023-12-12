@@ -1,10 +1,10 @@
 # AC215 - ScienceTutor
 
 ## Application Pipeline Flow
-<img width="1362" alt="image" src="pictures/science_tutor_app_pipeline2.png">
+<img width="1362" alt="image" src="../pictures/science_tutor_app_pipeline2.png">
 
 ## Vertex AI Pipeline for ML Workflow
-<img width="800" alt="image" src="pictures/ml_workflow.png">
+<img width="800" alt="image" src="../pictures/ml_workflow.png">
 
 ## Project Organization
       .
@@ -110,10 +110,10 @@ V100 unfortunately does not support bf16. We tried fp16 but due to Huggingface i
 The images below show the training output from our Weights & Biases Page. The Weights & Biases Page tracks our model training process. This is done by using the `wandb` library that we included in our `task.py` Python script.
 
 Train Tracking:
-<img width="1362" alt="image" src="pictures/wandb_train.png">
+<img width="1362" alt="image" src="../pictures/wandb_train.png">
 
 System Tracking:
-<img width="1362" alt="image" src="pictures/wandb_system.png">
+<img width="1362" alt="image" src="../pictures/wandb_system.png">
 
 ## Serverless Training
 
@@ -128,10 +128,10 @@ sh cli.sh
 ```
 
 Google Cloud Storage Bucket with our training code stored in `trainer.tar.gz`:
-<img width="1362" alt="image" src="pictures/gcs_model_bucket.png">
+<img width="1362" alt="image" src="../pictures/gcs_model_bucket.png">
 
 Vertex AI showing our attempts for model training (currently we are still restricted by Vertex AI's GPU quota and cannot load our model into memory):
-<img width="1362" alt="image" src="pictures/vertex_ai_model_training.png">
+<img width="1362" alt="image" src="../pictures/vertex_ai_model_training.png">
 
 ## Dataset Evaluation
 
@@ -176,14 +176,14 @@ docker build -t ui .
 docker run --gpus all -p 7860:7860 -t ui
 ```
 An example conversation with our model is shown below:
-<img width="1362" alt="image" src="pictures/web_server_demo.png">
+<img width="1362" alt="image" src="../pictures/web_server_demo.png">
 
 For online deployment, we have attempted to deploy our model on Vertex AI Endpoint, via the script in [`src/src/model_deploy/failed_vertex_ai_script.py`](src/model_deploy/failed_vertex_ai_script.py).
 However we are advised by Shivas that Vertex AI is not suitable for our use case, because Vertex AI takes only a model and build the API endpoint for you while we have our own service and API, like a web server.
 We are then suggested to try compute engine or cloud run. However there is no GPU support for cloud run, so as a workaround, we use compute engine instead.
 
 In this project we deploy our model, as well as the Web UI on Google compute engine, where instance starts from our customized docker:
-<img width="1362" alt="image" src="pictures/compute_engine.png">
+<img width="1362" alt="image" src="../pictures/compute_engine.png">
 As we quantized our model, we have successfully reduced the memory usage and are able to deployed our model on a T4 GPU with n1-highmem-2 instance.
 Note that there is an external IP assigned, so that user can directly go to `http://34.125.115.138:7860/` to access our service.
 We have stopped the instance to save cost as keeping it running all day would quickly exhaust our credits. Please contact us if you want to try it out, and we will start the instance for you.
@@ -319,9 +319,9 @@ python3 cli.py -w # Run the ScienceTutor App Pipeline (Data Processor and Model 
 
 The Data Processor component processes the ScienceQA dataset from huggingface and converts the data into LLaVA format for training the LLaVA model. The Model Training component takes the packaged model training code and sends job to Vertex AI to finetune the LLaVA model on the science domain. The Vertex AI Pipeline for ML Workflow is shown below (the Compute Engine component is discussed in the Model Deploy Container section). 
 
-<img width="800" alt="image" src="pictures/ml_workflow.png">
+<img width="800" alt="image" src="../pictures/ml_workflow.png">
 
-<img width="800" alt="image" src="pictures/ml_workflow_pipeline_run.png">
+<img width="800" alt="image" src="../pictures/ml_workflow_pipeline_run.png">
 
 
 #### (4) Model Deploy Container
