@@ -252,7 +252,7 @@ To run the container locally:
 * Open a terminal and go to the location `AC215_ScienceTutor/src/app_deploy`
 * Run `sh docker-shell.sh`
 
-**1) Deploy with Ansible and Kubernetes**
+**Deploy with Ansible and Kubernetes**
 
 * Build and Push Docker Containers to GCR (Google Container Registry)
 ```
@@ -265,7 +265,7 @@ ansible-playbook deploy-k8s-cluster.yml -i inventory.yml --extra-vars cluster_st
 ```
 Once the command runs go to `http://<YOUR INGRESS IP>.sslip.io`
 
-**2) Deploy with Ansible**
+**Deploy with Ansible**
 
 * Build and Push Docker Containers to GCR
 ```
