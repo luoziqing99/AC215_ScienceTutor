@@ -1,0 +1,9 @@
+all:
+    vars:
+      gcp_service_account_file: "/secrets/deployment.json"
+      gcp_service_account_email: "deployment@ac215project-398401.iam.gserviceaccount.com"
+      gcp_auth_kind: "serviceaccount"
+      gcp_scopes: "https://www.googleapis.com/auth/compute"
+      gcp_project: "ac215project-398401"
+      gcp_region: "us-west3"
+      gcp_zone: "us-west3-b"

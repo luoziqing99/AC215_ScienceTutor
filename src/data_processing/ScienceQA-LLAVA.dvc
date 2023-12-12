@@ -1,0 +1,6 @@
+outs:
+- md5: 36fcbc2398d9981ff3f8e448611e9e3e.dir
+  size: 697126282
+  nfiles: 10
+  hash: md5
+  path: ScienceQA-LLAVA

@@ -1,0 +1,25 @@
+all:
+    vars:
+      ansible_user: sa_102606769362199210646
+      ansible_ssh_private_key_file: "../../secrets/ssh-key-deployment"
+      gcp_service_account_file: "../../secrets/deployment.json"
+      gcp_service_account_email: "deployment@ac215project-398401.iam.gserviceaccount.com"
+      gcp_auth_kind: "serviceaccount"
+      gcp_scopes: "https://www.googleapis.com/auth/compute"
+      gcp_project: "ac215project-398401"
+      gcp_region: "us-west3"
+      gcp_zone: "us-west3-b"
+      docker_network_name: "appnetwork"
+      persistent_disk_name: "science-tutor-disk"
+      persistent_disk_size: 100
+      machine_instance_name: "science-tutor"
+      machine_type: "n1-standard-4"
+      machine_disk_size: 100
+      gcp_accelerator_count: 1
+      gcp_accelerator_type: "projects/ac215project-398401/zones/us-west3-b/acceleratorTypes/nvidia-tesla-t4"
+      k8s_accelerator_type: "nvidia-tesla-t4"
+
+    children:
+        appserver:
+            hosts:
+              34.106.243.206:
