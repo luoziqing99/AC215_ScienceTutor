@@ -171,7 +171,7 @@ We will use [ScienceQA](https://scienceqa.github.io/#dataset), which is a public
 
 We train on the training subset of the ScienceQA, which consists of 12,726 training instances. After training on the dataset, we evaluate our model on the 4,241 test set. To ease development, we have also preprocessed and uploaded the reformatted dataset (LLaVA format) to:
 * Hugging Face: [cnut1648/ScienceQA-LLAVA](https://huggingface.co/datasets/cnut1648/ScienceQA-LLAVA/)
-* GCS: gs://ac215-sciencetutor/ScienceQA-LLAVA
+* GCS: [gs://ac215-sciencetutor/ScienceQA-LLAVA](gs://ac215-sciencetutor/ScienceQA-LLAVA)
 
 In addition, ScienceQA contains the following data attributes:
 * **Question (and optionally image)** contains the actual science-related question
@@ -207,7 +207,7 @@ We deployed our frontend and backend to a kubernetes cluster to take care of loa
 
 Here is our deployed app on a K8s cluster in GCP:
 
-<img width="1362" alt="image" src="pictures/k8s-v2.png">
+<img width="1362" alt="image" src="pictures/k8s-v2.jpg">
 
 
 ### Code Structure
