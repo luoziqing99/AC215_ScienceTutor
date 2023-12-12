@@ -42,12 +42,6 @@
         platform: linux/amd64/v2
       name: jenniferz99/data_processing
       source: build
-  - name: Push data-processor image to GCR
-    community.general.docker_image:
-      name: jenniferz99/data_processing
-      repository: jenniferz99/data_processing
-      push: yes
-      source: local
   - name: "Save docker tag"
     shell: echo {{ tag.stdout}} > .docker-tag
   - name: "Remove all unused containers"
