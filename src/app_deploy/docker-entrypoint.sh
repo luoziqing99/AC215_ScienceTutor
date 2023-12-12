@@ -9,4 +9,12 @@ gcloud config set project $GCP_PROJECT
 # Configure GCR
 gcloud auth configure-docker gcr.io -q
 
-/bin/bash
+args="$@"
+echo $args
+
+if [[ -z ${args} ]]; 
+then
+    /bin/bash
+else
+    /bin/bash $args
+fi

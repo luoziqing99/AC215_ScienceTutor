@@ -9,8 +9,6 @@ import requests
 pwd = Path(__file__).parent.resolve()
 import sys, os
 sys.path.insert(0, "LLaVA")
-# print(sys.path)
-# print(os.environ.get("PYTHONPATH"))
 from llava.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 from llava.conversation import conv_templates, SeparatorStyle
 from llava.model.builder import load_pretrained_model
@@ -115,8 +113,15 @@ class ChatView(SwaggerView):
 app = Flask(__name__)
 
 swagger = Swagger(app)
-
 app.add_url_rule('/chat', view_func=ChatView.as_view('chat'), methods=['POST'])
+
+@app.route('/status', methods=['GET'])
+def get_api_status():
+    return jsonify({
+        "api_version": "1.0",
+        "torch_version": torch.__version__
+    })
+
 CORS(app)
 
 # Run the Flask app

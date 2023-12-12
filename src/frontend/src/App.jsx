@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Configuration, OpenAIApi } from "openai";
 
+const APP_VERSION = "1.0";
+
 // Reference: https://github.com/EBEREGIT/react-chatgpt-tutorial
 
 const configuration = new Configuration({
@@ -15,10 +17,23 @@ function App() {
   const [image, setImage] = useState(null);
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [api_version, setAPIVersion] = useState(null);
+  const [torch_version, setTorchVersion] = useState(null);
 
   useEffect(() => {
-    const delayBeforeHello = 1000; // Adjust the delay in milliseconds
+    console.log("API Version", api_version, torch_version)
+    fetch("/api/status", {
+      "method": "GET",
+    })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          setAPIVersion(data.api_version);
+          setTorchVersion(data.torch_version);
+        })
+        .catch(error => console.error('Error:', error));
 
+    const delayBeforeHello = 1000; // Adjust the delay in milliseconds
     setTimeout(() => {
       const systemMessage =
         "Hello! This is your Science Tutor. I can provide instant and expert answers to K12 science questions that you may have in different domains such as natural, social and language science. Feel free to ask me any questions you have and upload an image to start!";
@@ -83,8 +98,8 @@ function App() {
     setImage(null);
 
     console.log("Trying to send", chats, formData)
-    fetch("http://127.0.0.1:5000/chat", {
-    // fetch("http://34.125.158.148:5000/chat", {
+    fetch("/api/chat", { // for nginx
+    // fetch("http://127.0.0.1:5000/chat", { // for Docker.dev
       "method": "POST",
       body: formData
     })
@@ -115,6 +130,7 @@ function App() {
 
       <main className="main-container">
         <h1>ScienceTutor</h1>
+        <h4>APP v{APP_VERSION} &nbsp; API v{api_version} &nbsp; PyTorch v{torch_version}</h4>
 
         <section>
           {chats && chats.length
